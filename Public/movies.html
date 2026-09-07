@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CineHub - Movies</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #171129;
+            color: #F7F1E8;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            height: 86px;
+            background: #171129;
+            border-bottom: 1px solid #34294D;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 7%;
+        }
+
+        /* =========================
+           CINEHUB LOGO
+        ========================= */
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+
+            border: 4px solid #F4C43D;
+            border-radius: 50%;
+
+            position: relative;
+        }
+
+        /* Play triangle */
+
+        .logo-play {
+            position: absolute;
+
+            left: 14px;
+            top: 11px;
+
+            width: 0;
+            height: 0;
+
+            border-top: 9px solid transparent;
+            border-bottom: 9px solid transparent;
+            border-left: 14px solid #F4C43D;
+        }
+
+        /* Four dots */
+
+        .logo-dot {
+            position: absolute;
+
+            width: 5px;
+            height: 5px;
+
+            background: #F4C43D;
+
+            border-radius: 50%;
+        }
+
+        /* TOP */
+
+        .dot-top {
+            left: 50%;
+            top: 2px;
+            transform: translateX(-50%);
+        }
+
+        /* RIGHT */
+
+        .dot-right {
+            right: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* BOTTOM */
+
+        .dot-bottom {
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%);
+        }
+
+        /* LEFT */
+
+        .dot-left {
+            left: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Logo text */
+
+        .logo-text {
+            font-size: 25px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: #F7F1E8;
+        }
+
+        .logo-text span {
+            color: #F4C43D;
+        }
+
+        /* =========================
+           HOME BUTTON
+        ========================= */
+
+        .back-btn {
+            text-decoration: none;
+
+            background: #F4C43D;
+            color: #171129;
+
+            padding: 12px 27px;
+
+            border-radius: 25px;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .page {
+            width: 84%;
+            max-width: 1250px;
+
+            margin: auto;
+
+            padding: 55px 0;
+        }
+
+        .small-title {
+            color: #9B91B4;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            letter-spacing: 5px;
+
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            font-size: 48px;
+
+            margin-bottom: 14px;
+        }
+
+        h1 span {
+            color: #D4AF37;
+        }
+
+        .subtitle {
+            color: #9B91B4;
+
+            font-size: 17px;
+
+            margin-bottom: 45px;
+        }
+
+        /* =========================
+           MOVIE GRID
+        ========================= */
+
+        #moviesContainer {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(240px, 1fr));
+
+            gap: 28px;
+        }
+
+        /* =========================
+           MOVIE CARD
+        ========================= */
+
+        .movie-card {
+            background: #21183A;
+
+            border: 1px solid #34294D;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            transition: 0.3s;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+
+            border-color: #F4C43D;
+        }
+
+        .poster {
+            width: 100%;
+
+            height: 330px;
+
+            object-fit: cover;
+
+            display: block;
+
+            background: #2B2145;
+        }
+
+        .movie-info {
+            padding: 22px;
+        }
+
+        .movie-title {
+            font-size: 21px;
+
+            margin-bottom: 10px;
+        }
+
+        .genre {
+            color: #F4C43D;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 12px;
+        }
+
+        .description {
+            color: #9B91B4;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            min-height: 45px;
+
+            margin-bottom: 20px;
+        }
+
+        /* =========================
+           VIEW THEATRES BUTTON
+        ========================= */
+
+        .theatre-btn {
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 6px;
+
+            background: #F4C43D;
+
+            color: #171129;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .theatre-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           LOADING / ERROR
+        ========================= */
+
+        #loading {
+            text-align: center;
+
+            color: #9B91B4;
+
+            font-size: 18px;
+
+            padding: 50px 0;
+        }
+
+        #error {
+            text-align: center;
+
+            color: #F4C43D;
+
+            font-size: 18px;
+
+            padding: 30px 0;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            border-top: 1px solid #34294D;
+
+            margin-top: 40px;
+
+            padding: 25px;
+
+            text-align: center;
+
+            color: #716985;
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 0 5%;
+            }
+
+            .logo-text {
+                font-size: 21px;
+            }
+
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .page {
+                width: 90%;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            #moviesContainer {
+                grid-template-columns: 1fr;
+            }
+        }
+	::selection {
+    background: #F4C43D;
+    color: #171129;
+}
+
+::-moz-selection {
+    background: #F4C43D;
+    color: #171129;
+}
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div class="logo">
+
+            <div class="logo-icon">
+
+                <div class="logo-play"></div>
+
+                <div class="logo-dot dot-top"></div>
+                <div class="logo-dot dot-right"></div>
+                <div class="logo-dot dot-bottom"></div>
+                <div class="logo-dot dot-left"></div>
+
+            </div>
+
+
+            <div class="logo-text">
+
+                CINE<span>HUB</span>
+
+            </div>
+
+        </div>
+
+
+        <a href="index.html" class="back-btn">
+
+            HOME
+
+        </a>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main class="page">
+
+        <div class="small-title">
+            NOW SHOWING
+        </div>
+
+
+        <h1>
+            EXPLORE <span>MOVIES.</span>
+        </h1>
+
+
+        <p class="subtitle">
+            Pick a film. Pick a seat. Enjoy the show.
+        </p>
+
+
+        <div id="loading">
+            Loading movies...
+        </div>
+
+
+        <div id="error"></div>
+
+
+        <div id="moviesContainer"></div>
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer>
+        © 2026 CineHub — Book. Watch. Enjoy.
+    </footer>
+
+
+
+    <script>
+
+	window.cineHubMoviesLoaded = false;
+
+        async function loadMovies() {
+
+    if (window.cineHubMoviesLoaded) {
+        return;
+    }
+
+    window.cineHubMoviesLoaded = true;
+
+            const container =
+                document.getElementById("moviesContainer");
+
+            const loading =
+                document.getElementById("loading");
+
+            const error =
+                document.getElementById("error");
+
+
+            try {
+
+                const response =
+                    await fetch("/api/movies");
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Failed to load movies"
+                    );
+
+                }
+
+
+const movies =
+    await response.json();
+
+loading.style.display = "none";
+
+// Clear existing movie cards
+container.innerHTML = "";
+
+
+                if (!movies || movies.length === 0) {
+
+                    container.innerHTML = `
+
+                        <p style="color:#9B91B4;">
+                            No movies available right now.
+                        </p>
+
+                    `;
+
+                    return;
+                }
+
+
+                movies.forEach(movie => {
+
+                    const card =
+                        document.createElement("div");
+
+                    card.className =
+                        "movie-card";
+
+
+                    card.innerHTML = `
+
+                        <img
+                            class="poster"
+                            src="${movie.poster}"
+                            alt="${movie.title}"
+                        >
+
+
+                        <div class="movie-info">
+
+                            <h2 class="movie-title">
+                                ${movie.title}
+                            </h2>
+
+
+                            <div class="genre">
+                                ${movie.genre}
+                            </div>
+
+
+                            <p class="description">
+                                ${movie.description}
+                            </p>
+
+
+                            <button
+                                class="theatre-btn"
+                                onclick="viewTheatres(${movie.id})"
+                            >
+                                VIEW THEATRES →
+                            </button>
+
+                        </div>
+
+                    `;
+
+
+                    container.appendChild(card);
+
+                });
+
+            }
+
+
+            catch (err) {
+
+                loading.style.display = "none";
+
+                error.innerText =
+                    "Unable to load movies. Please check the server.";
+
+                console.log(err);
+
+            }
+
+        }
+
+
+        async function viewTheatres(movieId) {
+
+            window.location.href =
+                "theatres.html?movie_id=" + movieId;
+
+        }
+
+
+        loadMovies();
+
+    </script>
+
+
+</body>
+
+</html>

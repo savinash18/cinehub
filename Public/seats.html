@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>CineHub - Select Seats</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #171129;
+
+            color: #F7F1E8;
+
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        header {
+
+            height: 75px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            background: #171129;
+
+            border-bottom: 1px solid #3b3155;
+
+        }
+
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 25px;
+
+            font-weight: bold;
+
+            color: #F4C43D;
+
+        }
+
+
+        /* =========================================
+           LOGO
+        ========================================= */
+
+        .logo-icon {
+
+            position: relative;
+
+            width: 42px;
+
+            height: 42px;
+
+            border: 3px solid #F4C43D;
+
+            border-radius: 50%;
+
+        }
+
+
+        .logo-play {
+
+            position: absolute;
+
+            left: 50%;
+
+            top: 50%;
+
+            transform:
+                translate(-40%, -50%);
+
+            width: 0;
+
+            height: 0;
+
+            border-top:
+                8px solid transparent;
+
+            border-bottom:
+                8px solid transparent;
+
+            border-left:
+                12px solid #F4C43D;
+
+            z-index: 2;
+
+        }
+
+
+        .logo-dot {
+
+            position: absolute;
+
+            width: 5px;
+
+            height: 5px;
+
+            background: #F4C43D;
+
+            border-radius: 50%;
+
+            z-index: 3;
+
+        }
+
+
+        .dot-top {
+
+            top: 3px;
+
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+        }
+
+
+        .dot-right {
+
+            right: 3px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+        }
+
+
+        .dot-bottom {
+
+            bottom: 3px;
+
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+        }
+
+
+        .dot-left {
+
+            left: 3px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+        }
+
+
+        .back-btn {
+
+            text-decoration: none;
+
+            color: #F4C43D;
+
+            font-weight: bold;
+
+            border: 1px solid #F4C43D;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+        }
+
+
+        .back-btn:hover {
+
+            background: #F4C43D;
+
+            color: #171129;
+
+        }
+
+
+        /* =========================================
+           MAIN
+        ========================================= */
+
+        .page {
+
+            width: 95%;
+
+            max-width: 1200px;
+
+            margin: 35px auto 60px;
+
+            text-align: center;
+
+        }
+
+
+        .small-title {
+
+            color: #9B91B4;
+
+            font-size: 13px;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        h1 {
+
+            margin: 0;
+
+            color: #F4C43D;
+
+            font-size: 32px;
+
+        }
+
+
+        .show-info {
+
+            margin-top: 12px;
+
+            color: #BDB5CC;
+
+            font-size: 15px;
+
+        }
+
+
+        .show-info span {
+
+            color: #F4C43D;
+
+            font-weight: bold;
+
+        }
+
+
+        /* =========================================
+           LEGEND
+        ========================================= */
+
+        .legend {
+
+            margin: 28px auto;
+
+            display: flex;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 24px;
+
+        }
+
+
+        .legend-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            color: #BDB5CC;
+
+            font-size: 14px;
+
+        }
+
+
+        .legend-seat {
+
+            width: 28px;
+
+            height: 28px;
+
+            border-radius: 6px;
+
+            border: 1px solid #6B6082;
+
+        }
+
+
+        .legend-regular {
+
+            background: #30264B;
+
+        }
+
+
+        .legend-recliner {
+
+            background: #30264B;
+
+            border-color: #F4C43D;
+
+        }
+
+
+        .legend-selected {
+
+            background: #F4C43D;
+
+            border-color: #F4C43D;
+
+        }
+
+
+        .legend-booked {
+
+            background: #595260;
+
+            border-color: #595260;
+
+        }
+
+
+        /* =========================================
+           SEAT AREA
+        ========================================= */
+
+        .seat-container {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 14px;
+
+            overflow-x: auto;
+
+            padding: 10px 0;
+
+        }
+
+
+        .seat-row {
+
+            display: flex;
+
+            align-items: center;
+
+            min-width: 950px;
+
+        }
+
+
+        .row-label {
+
+            width: 35px;
+
+            text-align: center;
+
+            color: #F4C43D;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .seat-side {
+
+            display: flex;
+
+            gap: 6px;
+
+        }
+
+
+        .aisle {
+
+            width: 45px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .seat {
+
+            width: 44px;
+
+            height: 40px;
+
+            background: #30264B;
+
+            border: 1px solid #6B6082;
+
+            border-radius: 6px;
+
+            color: #F7F1E8;
+
+            font-size: 12px;
+
+            cursor: pointer;
+
+            transition: 0.15s;
+
+        }
+
+
+        .seat:hover:not(.booked) {
+
+            border-color: #F4C43D;
+
+            transform: translateY(-1px);
+
+        }
+
+
+        /* RECLINER */
+
+        .seat.recliner {
+
+            border-color: #F4C43D;
+
+        }
+
+
+        /* SELECTED */
+
+        .seat.selected {
+
+            background: #F4C43D;
+
+            border-color: #F4C43D;
+
+            color: #171129;
+
+            font-weight: bold;
+
+        }
+
+
+        /* =========================================
+           BOOKED SEATS
+        ========================================= */
+
+        .seat.booked {
+
+            background: #595260;
+
+            border-color: #595260;
+
+            color: #AAA4B0;
+
+            cursor: not-allowed;
+
+            opacity: 0.75;
+
+            position: relative;
+
+        }
+
+
+        .seat.booked::after {
+
+            content: "×";
+
+            position: absolute;
+
+            left: 50%;
+
+            top: 50%;
+
+            transform:
+                translate(-50%, -50%);
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: #DED9E2;
+
+        }
+
+
+        /* =========================================
+           SCREEN
+        ========================================= */
+
+        .screen {
+
+            width: 80%;
+
+            max-width: 1000px;
+
+            height: 12px;
+
+            background: #F4C43D;
+
+            margin: 50px auto 0;
+
+            border-radius: 50%;
+
+            box-shadow:
+                0 0 18px
+                rgba(244, 196, 61, 0.25);
+
+        }
+
+
+        .screen-text {
+
+            text-align: center;
+
+            color: #8F86A3;
+
+            margin-top: 12px;
+
+            margin-bottom: 35px;
+
+            letter-spacing: 3px;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =========================================
+           SELECTED INFO
+        ========================================= */
+
+        .selection-panel {
+
+            background: #21183A;
+
+            border: 1px solid #3b3155;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            margin-top: 20px;
+
+        }
+
+
+        .selection-title {
+
+            color: #F4C43D;
+
+            font-weight: bold;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        #selectedSeats {
+
+            color: #F7F1E8;
+
+            min-height: 24px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        #selectedCount {
+
+            color: #9B91B4;
+
+            font-size: 14px;
+
+        }
+
+
+        .continue-btn {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            background: #F4C43D;
+
+            color: #171129;
+
+            border: none;
+
+            border-radius: 10px;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+        }
+
+
+        .continue-btn:hover {
+
+            background: #ffd85d;
+
+        }
+
+
+        /* =========================================
+           ERROR MESSAGE
+        ========================================= */
+
+        .message {
+
+            display: none;
+
+            width: 100%;
+
+            max-width: 500px;
+
+            margin: 15px auto 0;
+
+            padding: 13px;
+
+            border: 1px solid #F4C43D;
+
+            border-radius: 9px;
+
+            background: #342044;
+
+            color: #F7F1E8;
+
+        }
+
+
+        /* =========================================
+           CONFIRM OVERLAY
+        ========================================= */
+
+        .confirm-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(10, 7, 20, 0.82);
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            z-index: 9999;
+
+            padding: 20px;
+
+        }
+
+
+        .confirm-box {
+
+            width: 100%;
+
+            max-width: 470px;
+
+            background: #21183A;
+
+            border: 1px solid #F4C43D;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.55);
+
+        }
+
+
+        .confirm-title {
+
+            text-align: center;
+
+            color: #F4C43D;
+
+            font-size: 25px;
+
+            font-weight: bold;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .confirm-message {
+
+            text-align: center;
+
+            color: #F7F1E8;
+
+            line-height: 1.6;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .confirm-details {
+
+            background: #171129;
+
+            border: 1px solid #3b3155;
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .confirm-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            margin: 10px 0;
+
+        }
+
+
+        .confirm-row span:last-child {
+
+            color: #F4C43D;
+
+            font-weight: bold;
+
+        }
+
+
+        .confirm-buttons {
+
+            display: flex;
+
+            gap: 12px;
+
+        }
+
+
+        .cancel-btn,
+        .confirm-btn {
+
+            flex: 1;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+        }
+
+
+        .cancel-btn {
+
+            background: transparent;
+
+            color: #F7F1E8;
+
+            border: 1px solid #6a5c82;
+
+        }
+
+
+        .cancel-btn:hover {
+
+            border-color: #F4C43D;
+
+            color: #F4C43D;
+
+        }
+
+
+        .confirm-btn {
+
+            background: #F4C43D;
+
+            color: #171129;
+
+            border: none;
+
+        }
+
+
+        .confirm-btn:hover {
+
+            background: #ffd85d;
+
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 700px) {
+
+            header {
+
+                padding: 0 20px;
+
+            }
+
+
+            .page {
+
+                width: 98%;
+
+            }
+
+
+            h1 {
+
+                font-size: 27px;
+
+            }
+
+
+            .seat-row {
+
+                min-width: 900px;
+
+            }
+
+
+            .seat {
+
+                width: 40px;
+
+            }
+
+
+            .aisle {
+
+                width: 30px;
+
+            }
+
+        }
+.logo-text {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.logo-text .cine {
+  color: #f7f1e8;   /* WHITE */
+}
+
+.logo-text .hub {
+  color: #f4c43d;   /* GOLD */
+}
+::selection {
+    background: #F4C43D;
+    color: #171129;
+}
+
+::-moz-selection {
+    background: #F4C43D;
+    color: #171129;
+}
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         HEADER
+    ========================================= -->
+
+    <header>
+
+         <div class="logo">
+
+            <div class="logo-icon">
+
+                <div class="logo-play"></div>
+
+                <div class="logo-dot dot-top"></div>
+
+                <div class="logo-dot dot-right"></div>
+
+                <div class="logo-dot dot-bottom"></div>
+
+                <div class="logo-dot dot-left"></div>
+
+            </div>
+
+
+            <div class="logo-text">
+  <span class="cine">CINE</span><span class="hub">HUB</span>
+</div>
+
+        </div>
+
+
+        <a
+            href="javascript:history.back()"
+            class="back-btn"
+        >
+            BACK
+        </a>
+
+    </header>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================= -->
+
+    <main class="page">
+
+        <div class="small-title">
+            SELECT YOUR SEATS
+        </div>
+
+
+        <h1>
+            CHOOSE YOUR SEAT.
+        </h1>
+
+
+        <div class="show-info">
+
+            <span id="screenName">
+                Screen
+            </span>
+
+            &nbsp; • &nbsp;
+
+            <span id="variation">
+                2D
+            </span>
+
+            &nbsp; • &nbsp;
+
+            <span id="showTime">
+                Time
+            </span>
+
+            &nbsp; • &nbsp;
+
+            <span id="showDate">
+                Date
+            </span>
+
+        </div>
+
+
+        <!-- =====================================
+             LEGEND
+        ====================================== -->
+
+        <div class="legend">
+
+            <div class="legend-item">
+
+                <div class="legend-seat legend-regular"></div>
+
+                Regular
+
+            </div>
+
+
+            <div class="legend-item">
+
+                <div class="legend-seat legend-recliner"></div>
+
+                Recliner
+
+            </div>
+
+
+            <div class="legend-item">
+
+                <div class="legend-seat legend-selected"></div>
+
+                Selected
+
+            </div>
+
+
+            <div class="legend-item">
+
+                <div class="legend-seat legend-booked"></div>
+
+                Booked
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             SEATS
+        ====================================== -->
+
+        <div
+            class="seat-container"
+            id="seatContainer"
+        >
+        </div>
+
+
+        <!-- SCREEN BELOW SEATS -->
+
+        <div class="screen"></div>
+
+        <div class="screen-text">
+            SCREEN
+        </div>
+
+
+        <!-- =====================================
+             SELECTION PANEL
+        ====================================== -->
+
+        <div class="selection-panel">
+
+            <div class="selection-title">
+                SELECTED SEATS
+            </div>
+
+
+            <div id="selectedSeats">
+                None
+            </div>
+
+
+            <div id="selectedCount">
+                0 seats selected
+            </div>
+
+
+            <button
+                class="continue-btn"
+                onclick="continueBooking()"
+            >
+                CONTINUE
+            </button>
+
+
+            <div
+                class="message"
+                id="message"
+            ></div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================
+         CONFIRMATION
+    ========================================= -->
+
+    <div
+        class="confirm-overlay"
+        id="confirmOverlay"
+    >
+
+        <div class="confirm-box">
+
+            <div class="confirm-title">
+                Confirm Seats
+            </div>
+
+
+            <div class="confirm-message">
+                Please confirm your selected seats.
+            </div>
+
+
+            <div class="confirm-details">
+
+                <div class="confirm-row">
+
+                    <span>
+                        Seats
+                    </span>
+
+                    <span id="confirmSeats">
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="confirm-row">
+
+                    <span>
+                        Screen
+                    </span>
+
+                    <span id="confirmScreen">
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="confirm-row">
+
+                    <span>
+                        Show Time
+                    </span>
+
+                    <span id="confirmTime">
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="confirm-buttons">
+
+                <button
+                    class="cancel-btn"
+                    onclick="closeConfirmation()"
+                >
+                    BACK
+                </button>
+
+
+                <button
+                    class="confirm-btn"
+                    onclick="goToBooking()"
+                >
+                    CONTINUE
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* =========================================
+           URL PARAMETERS
+        ========================================= */
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const showId =
+            params.get("show_id");
+
+        const movieId =
+            params.get("movie_id");
+const movieTitle =
+    params.get("movie_title");
+
+        const screen =
+            params.get("screen");
+
+        const variation =
+            params.get("variation");
+
+        const time =
+            params.get("time");
+
+        const date =
+            params.get("date");
+
+
+        /* =========================================
+           SELECTED SEATS
+        ========================================= */
+
+        let selectedSeats = [];
+
+
+        /* =========================================
+           DISPLAY SHOW INFO
+        ========================================= */
+
+        document.getElementById(
+            "screenName"
+        ).textContent =
+            screen || "Screen";
+
+
+        document.getElementById(
+            "variation"
+        ).textContent =
+            variation || "2D";
+
+
+        document.getElementById(
+            "showTime"
+        ).textContent =
+            time || "-";
+
+
+        document.getElementById(
+            "showDate"
+        ).textContent =
+            date || "-";
+
+
+        /* =========================================
+           LOAD SEATS
+        ========================================= */
+
+        async function loadSeats() {
+
+            const container =
+                document.getElementById(
+                    "seatContainer"
+                );
+
+
+            container.innerHTML =
+                "<div style='color:#9B91B4;'>Loading seats...</div>";
+
+
+            try {
+
+                if (!showId) {
+
+                    throw new Error(
+                        "Show information is missing."
+                    );
+
+                }
+
+
+                const response =
+                    await fetch(
+                        `/api/shows/${showId}/seats`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to load seats."
+                    );
+
+                }
+
+
+                container.innerHTML = "";
+
+
+                /* =================================
+                   GROUP BY ROW
+                ================================= */
+
+                const grouped = {};
+
+
+                data.forEach(seat => {
+
+                    if (!grouped[seat.seat_row]) {
+
+                        grouped[seat.seat_row] = [];
+
+                    }
+
+
+                    grouped[
+                        seat.seat_row
+                    ].push(seat);
+
+                });
+
+
+                const rows = [
+                    "A",
+                    "B",
+                    "C",
+                    "D",
+                    "E",
+                    "F",
+                    "G",
+                    "H",
+                    "I",
+                    "J",
+                    "K"
+                ];
+
+
+                rows.forEach(row => {
+
+                    const seats =
+                        grouped[row] || [];
+
+
+                    seats.sort(
+                        (a, b) =>
+                            Number(a.seat_number) -
+                            Number(b.seat_number)
+                    );
+
+
+                    if (seats.length === 0) {
+
+                        return;
+
+                    }
+
+
+                    const rowDiv =
+                        document.createElement(
+                            "div"
+                        );
+
+                    rowDiv.className =
+                        "seat-row";
+
+
+                    /* ROW LABEL */
+
+                    const label =
+                        document.createElement(
+                            "div"
+                        );
+
+                    label.className =
+                        "row-label";
+
+                    label.textContent =
+                        row;
+
+
+                    rowDiv.appendChild(
+                        label
+                    );
+
+
+                    /* LEFT SIDE */
+
+                    const left =
+                        document.createElement(
+                            "div"
+                        );
+
+                    left.className =
+                        "seat-side";
+
+
+                    seats
+                        .filter(
+                            seat =>
+                                Number(
+                                    seat.seat_number
+                                ) <= 10
+                        )
+                        .forEach(
+                            seat =>
+                                addSeatButton(
+                                    left,
+                                    seat
+                                )
+                        );
+
+
+                    rowDiv.appendChild(
+                        left
+                    );
+
+
+                    /* AISLE */
+
+                    const aisle =
+                        document.createElement(
+                            "div"
+                        );
+
+                    aisle.className =
+                        "aisle";
+
+
+                    rowDiv.appendChild(
+                        aisle
+                    );
+
+
+                    /* RIGHT SIDE */
+
+                    const right =
+                        document.createElement(
+                            "div"
+                        );
+
+                    right.className =
+                        "seat-side";
+
+
+                    seats
+                        .filter(
+                            seat =>
+                                Number(
+                                    seat.seat_number
+                                ) > 10
+                        )
+                        .forEach(
+                            seat =>
+                                addSeatButton(
+                                    right,
+                                    seat
+                                )
+                        );
+
+
+                    rowDiv.appendChild(
+                        right
+                    );
+
+
+                    container.appendChild(
+                        rowDiv
+                    );
+
+                });
+
+            }
+
+            catch (error) {
+
+                container.innerHTML = `
+
+                    <div style="
+                        color:#F4C43D;
+                        padding:30px;
+                    ">
+
+                        ${error.message}
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        /* =========================================
+           CREATE SEAT BUTTON
+        ========================================= */
+
+        function addSeatButton(
+            parent,
+            seat
+        ) {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.className =
+                "seat";
+
+
+            const seatName =
+                seat.seat_name ||
+                (
+                    seat.seat_row +
+                    seat.seat_number
+                );
+
+
+            button.textContent =
+                seatName;
+
+
+            /* RECLINER */
+
+            if (
+                seat.seat_type ===
+                "RECLINER"
+            ) {
+
+                button.classList.add(
+                    "recliner"
+                );
+
+            }
+
+
+            /* =================================
+               BOOKED
+            ================================= */
+
+            if (
+                Number(seat.booked) === 1 ||
+                seat.booked === true
+            ) {
+
+                button.classList.add(
+                    "booked"
+                );
+
+                button.disabled =
+                    true;
+
+                button.title =
+                    "This seat is already booked.";
+
+                parent.appendChild(
+                    button
+                );
+
+                return;
+
+            }
+
+
+            /* =================================
+               CLICK
+            ================================= */
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    toggleSeat(
+                        button,
+                        seatName
+                    );
+
+                }
+            );
+
+
+            parent.appendChild(
+                button
+            );
+
+        }
+
+
+        /* =========================================
+           TOGGLE SEAT
+        ========================================= */
+
+        function toggleSeat(
+            button,
+            seatName
+        ) {
+
+            const index =
+                selectedSeats.indexOf(
+                    seatName
+                );
+
+
+            if (index === -1) {
+
+                selectedSeats.push(
+                    seatName
+                );
+
+                button.classList.add(
+                    "selected"
+                );
+
+            } else {
+
+                selectedSeats.splice(
+                    index,
+                    1
+                );
+
+                button.classList.remove(
+                    "selected"
+                );
+
+            }
+
+
+            updateSelection();
+
+        }
+
+
+        /* =========================================
+           UPDATE SELECTION
+        ========================================= */
+
+        function updateSelection() {
+
+            const selected =
+                document.getElementById(
+                    "selectedSeats"
+                );
+
+
+            const count =
+                document.getElementById(
+                    "selectedCount"
+                );
+
+
+            if (
+                selectedSeats.length === 0
+            ) {
+
+                selected.textContent =
+                    "None";
+
+            } else {
+
+                selected.textContent =
+                    selectedSeats.join(
+                        ", "
+                    );
+
+            }
+
+
+            count.textContent =
+                `${selectedSeats.length} seat${
+                    selectedSeats.length === 1
+                        ? ""
+                        : "s"
+                } selected`;
+
+        }
+
+
+        /* =========================================
+           CONTINUE
+        ========================================= */
+
+        function continueBooking() {
+
+            const message =
+                document.getElementById(
+                    "message"
+                );
+
+
+            message.style.display =
+                "none";
+
+
+            if (
+                selectedSeats.length === 0
+            ) {
+
+                message.textContent =
+                    "Please select at least one seat.";
+
+                message.style.display =
+                    "block";
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "confirmSeats"
+            ).textContent =
+                selectedSeats.join(
+                    ", "
+                );
+
+
+            document.getElementById(
+                "confirmScreen"
+            ).textContent =
+                screen || "-";
+
+
+            document.getElementById(
+                "confirmTime"
+            ).textContent =
+                time || "-";
+
+
+            document.getElementById(
+                "confirmOverlay"
+            ).style.display =
+                "flex";
+
+        }
+
+
+        /* =========================================
+           CLOSE CONFIRMATION
+        ========================================= */
+
+        function closeConfirmation() {
+
+            document.getElementById(
+                "confirmOverlay"
+            ).style.display =
+                "none";
+
+        }
+
+
+        /* =========================================
+           GO TO BOOKING PAGE
+        ========================================= */
+
+        function goToBooking() {
+
+            const seatString =
+                selectedSeats.join(
+                    ","
+                );
+
+
+            const url =
+                "booking.html" +
+
+                `?show_id=${
+                    encodeURIComponent(
+                        showId
+                    )
+                }` +
+
+                `&movie_id=${
+                    encodeURIComponent(
+                        movieId
+                    )
+                }` +
+		`&movie_title=${
+    encodeURIComponent(
+        movieTitle || "Movie"
+    )
+}` +
+
+                `&screen=${
+                    encodeURIComponent(
+                        screen
+                    )
+                }` +
+
+                `&variation=${
+                    encodeURIComponent(
+                        variation
+                    )
+                }` +
+
+                `&time=${
+                    encodeURIComponent(
+                        time
+                    )
+                }` +
+
+                `&date=${
+                    encodeURIComponent(
+                        date
+                    )
+                }` +
+
+                `&seats=${
+                    encodeURIComponent(
+                        seatString
+                    )
+                }`;
+
+
+            window.location.href =
+                url;
+
+        }
+
+
+        /* =========================================
+           CLICK OUTSIDE CONFIRMATION
+        ========================================= */
+
+        document
+            .getElementById(
+                "confirmOverlay"
+            )
+            .addEventListener(
+                "click",
+                function(event) {
+
+                    if (
+                        event.target ===
+                        this
+                    ) {
+
+                        closeConfirmation();
+
+                    }
+
+                }
+            );
+
+
+        /* =========================================
+           INITIAL LOAD
+        ========================================= */
+
+        loadSeats();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CineHub - Booking Summary</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+            background: #171129;
+
+            color: #F7F1E8;
+
+            font-family: Arial, sans-serif;
+
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            height: 86px;
+
+            background: #171129;
+
+            border-bottom: 1px solid #34294D;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 7%;
+        }
+
+
+        .logo {
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .logo-icon {
+            width: 48px;
+
+            height: 48px;
+
+            border: 4px solid #F4C43D;
+
+            border-radius: 50%;
+
+            position: relative;
+        }
+
+
+        .logo-play {
+            position: absolute;
+
+            left: 14px;
+
+            top: 11px;
+
+            width: 0;
+
+            height: 0;
+
+            border-top: 9px solid transparent;
+
+            border-bottom: 9px solid transparent;
+
+            border-left: 14px solid #F4C43D;
+        }
+
+
+        .logo-dot {
+            position: absolute;
+
+            width: 5px;
+
+            height: 5px;
+
+            background: #F4C43D;
+
+            border-radius: 50%;
+        }
+
+
+        .dot-top {
+            left: 50%;
+
+            top: 2px;
+
+            transform:
+                translateX(-50%);
+        }
+
+
+        .dot-right {
+            right: 2px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+        }
+
+
+        .dot-bottom {
+            left: 50%;
+
+            bottom: 2px;
+
+            transform:
+                translateX(-50%);
+        }
+
+
+        .dot-left {
+            left: 2px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+        }
+
+
+        .logo-text {
+            font-size: 25px;
+
+            font-weight: 900;
+
+            color: #F7F1E8;
+        }
+
+
+        .logo-text span {
+            color: #F4C43D;
+        }
+
+
+        .back-btn {
+            text-decoration: none;
+
+            background: #F4C43D;
+
+            color: #171129;
+
+            padding: 12px 27px;
+
+            border-radius: 25px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .page {
+            width: 84%;
+
+            max-width: 1000px;
+
+            margin: auto;
+
+            padding: 55px 0;
+        }
+
+
+        .small-title {
+            color: #9B91B4;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            letter-spacing: 5px;
+
+            margin-bottom: 14px;
+        }
+
+
+        h1 {
+            font-size: 46px;
+
+            margin-bottom: 12px;
+        }
+
+
+        h1 span {
+            color: #F4C43D;
+        }
+
+
+        #movieTitle {
+            color: #F4C43D;
+
+            font-size: 23px;
+
+            margin-bottom: 35px;
+        }
+
+
+        /* =========================
+           SUMMARY CARD
+        ========================= */
+
+        .summary-card {
+            background: #21183A;
+
+            border: 1px solid #34294D;
+
+            border-radius: 12px;
+
+            padding: 30px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .section-title {
+            color: #9B91B4;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 18px;
+        }
+
+
+        /* =========================
+           SHOW INFO
+        ========================= */
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+        }
+
+
+        .info-box {
+            background: #171129;
+
+            border: 1px solid #34294D;
+
+            border-radius: 7px;
+
+            padding: 15px;
+        }
+
+
+        .info-label {
+            color: #9B91B4;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .info-value {
+            color: #F7F1E8;
+
+            font-size: 15px;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           SEATS
+        ========================= */
+
+        #seatList {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+        }
+
+
+        .seat-tag {
+            background: #F4C43D;
+
+            color: #171129;
+
+            padding: 9px 14px;
+
+            border-radius: 5px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           PRICE
+        ========================= */
+
+        .price-row {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid #34294D;
+        }
+
+
+        .price-row:last-child {
+            border-bottom: none;
+        }
+
+
+        .price-name {
+            color: #BDB5CC;
+
+            font-size: 15px;
+        }
+
+
+        .price-value {
+            color: #F7F1E8;
+
+            font-weight: bold;
+        }
+
+
+        .total-row {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-top: 18px;
+
+            padding-top: 18px;
+
+            border-top: 1px solid #34294D;
+        }
+
+
+        .total-label {
+            font-size: 18px;
+
+            font-weight: bold;
+        }
+
+
+        .total-value {
+            color: #F4C43D;
+
+            font-size: 25px;
+
+            font-weight: 900;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .actions {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-top: 25px;
+        }
+
+
+        .secondary-btn {
+            background: transparent;
+
+            color: #F4C43D;
+
+            border: 1px solid #F4C43D;
+
+            padding: 14px 28px;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .payment-btn {
+            background: #F4C43D;
+
+            color: #171129;
+
+            border: none;
+
+            padding: 15px 35px;
+
+            border-radius: 6px;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .payment-btn:hover {
+            transform: translateY(-2px);
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            border-top: 1px solid #34294D;
+
+            margin-top: 40px;
+
+            padding: 25px;
+
+            text-align: center;
+
+            color: #716985;
+
+            font-size: 13px;
+        }
+
+
+        @media (max-width: 700px) {
+
+            .page {
+                width: 92%;
+            }
+
+
+            h1 {
+                font-size: 36px;
+            }
+
+
+            .info-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .actions {
+                flex-direction: column;
+            }
+
+
+            .secondary-btn,
+            .payment-btn {
+                width: 100%;
+            }
+
+        }
+
+
+        @media (max-width: 450px) {
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+	::selection {
+    background: #F4C43D;
+    color: #171129;
+}
+
+::-moz-selection {
+    background: #F4C43D;
+    color: #171129;
+}
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header>
+
+        <div class="logo">
+
+            <div class="logo-icon">
+
+                <div class="logo-play"></div>
+
+                <div class="logo-dot dot-top"></div>
+
+                <div class="logo-dot dot-right"></div>
+
+                <div class="logo-dot dot-bottom"></div>
+
+                <div class="logo-dot dot-left"></div>
+
+            </div>
+
+
+            <div class="logo-text">
+
+                CINE<span>HUB</span>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="movies.html"
+            class="back-btn"
+        >
+
+            MOVIES
+
+        </a>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="page">
+
+
+        <div class="small-title">
+
+            BOOKING SUMMARY
+
+        </div>
+
+
+        <h1>
+
+            REVIEW YOUR <span>BOOKING.</span>
+
+        </h1>
+
+
+        <h2 id="movieTitle">
+
+            Loading...
+
+        </h2>
+
+
+        <!-- =========================
+             SHOW DETAILS
+        ========================= -->
+
+        <div class="summary-card">
+
+            <div class="section-title">
+
+                SHOW DETAILS
+
+            </div>
+
+
+            <div class="info-grid">
+
+                <div class="info-box">
+
+                    <div class="info-label">
+
+                        Date
+
+                    </div>
+
+                    <div
+                        class="info-value"
+                        id="showDate"
+                    >
+
+                        -
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+
+                        Time
+
+                    </div>
+
+                    <div
+                        class="info-value"
+                        id="showTime"
+                    >
+
+                        -
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+
+                        Screen
+
+                    </div>
+
+                    <div
+                        class="info-value"
+                        id="screenName"
+                    >
+
+                        -
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+
+                        Format
+
+                    </div>
+
+                    <div
+                        class="info-value"
+                        id="variation"
+                    >
+
+                        -
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             SELECTED SEATS
+        ========================= -->
+
+        <div class="summary-card">
+
+            <div class="section-title">
+
+                SELECTED SEATS
+
+            </div>
+
+
+            <div id="seatList">
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             PRICE
+        ========================= -->
+
+        <div class="summary-card">
+
+            <div class="section-title">
+
+                PRICE DETAILS
+
+            </div>
+
+
+            <div
+                class="price-row"
+                id="regularRow"
+            >
+
+                <div class="price-name">
+
+                    Regular Seats
+                    (<span id="regularCount">0</span>)
+
+                </div>
+
+
+                <div
+                    class="price-value"
+                    id="regularAmount"
+                >
+
+                    ₹0
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="price-row"
+                id="reclinerRow"
+            >
+
+                <div class="price-name">
+
+                    Recliner Seats
+                    (<span id="reclinerCount">0</span>)
+
+                </div>
+
+
+                <div
+                    class="price-value"
+                    id="reclinerAmount"
+                >
+
+                    ₹0
+
+                </div>
+
+            </div>
+
+
+            <div class="price-row">
+
+                <div class="price-name">
+
+                    Booking Fee
+
+                </div>
+
+
+                <div class="price-value">
+
+                    ₹0
+
+                </div>
+
+            </div>
+
+
+            <div class="total-row">
+
+                <div class="total-label">
+
+                    TOTAL
+
+                </div>
+
+
+                <div
+                    class="total-value"
+                    id="totalAmount"
+                >
+
+                    ₹0
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             ACTIONS
+        ========================= -->
+
+        <div class="actions">
+
+            <button
+                class="secondary-btn"
+                onclick="goBack()"
+            >
+
+                ← BACK TO SEATS
+
+            </button>
+
+
+            <button
+                class="payment-btn"
+                onclick="proceedToPayment()"
+            >
+
+                PROCEED TO PAYMENT →
+
+            </button>
+
+        </div>
+
+
+    </main>
+
+
+    <footer>
+
+        © 2026 CineHub — Book. Watch. Enjoy.
+
+    </footer>
+
+
+
+    <script>
+
+
+        // ==========================================
+        // URL PARAMETERS
+        // ==========================================
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const showId =
+            params.get("show_id");
+
+const movieId =
+    params.get("movie_id");
+
+const movieTitle =
+    params.get("movie_title");
+
+        const screen =
+            params.get("screen");
+
+
+        const variation =
+            params.get("variation");
+
+
+        const time =
+            params.get("time");
+
+
+        const date =
+            params.get("date");
+
+
+        const seatsText =
+            params.get("seats");
+
+
+        // ==========================================
+        // PRICES
+        // ==========================================
+
+        const REGULAR_PRICE = 150;
+
+        const RECLINER_PRICE = 250;
+
+
+        // ==========================================
+        // SELECTED SEATS
+        // ==========================================
+
+        let selectedSeats = [];
+
+
+        if (seatsText) {
+
+            selectedSeats =
+                seatsText
+                    .split(",")
+                    .filter(
+                        seat =>
+                            seat.trim() !== ""
+                    );
+
+        }
+
+
+        // ==========================================
+        // DISPLAY SHOW INFORMATION
+        // ==========================================
+
+        document.getElementById(
+            "showDate"
+        ).innerText =
+            formatDate(date);
+
+
+        document.getElementById(
+            "showTime"
+        ).innerText =
+            time || "-";
+
+
+        document.getElementById(
+            "screenName"
+        ).innerText =
+            screen || "-";
+
+
+        document.getElementById(
+            "variation"
+        ).innerText =
+            variation || "-";
+
+
+        // ==========================================
+        // FORMAT DATE
+        // ==========================================
+
+        function formatDate(value) {
+
+            if (!value) {
+
+                return "-";
+
+            }
+
+
+            const parts =
+                value.split("-");
+
+
+            if (
+                parts.length !== 3
+            ) {
+
+                return value;
+
+            }
+
+
+            const dateObject =
+                new Date(
+                    Number(parts[0]),
+                    Number(parts[1]) - 1,
+                    Number(parts[2])
+                );
+
+
+            return dateObject.toLocaleDateString(
+                "en-IN",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }
+            );
+
+        }
+
+// ==========================================
+// DISPLAY MOVIE NAME
+// ==========================================
+
+document.getElementById(
+    "movieTitle"
+).innerText =
+    movieTitle || "Movie Booking";
+
+
+
+
+        // ==========================================
+        // DISPLAY SEATS
+        // ==========================================
+
+        function displaySeats() {
+
+            const container =
+                document.getElementById(
+                    "seatList"
+                );
+
+
+            container.innerHTML = "";
+
+
+            if (
+                selectedSeats.length === 0
+            ) {
+
+                container.innerHTML = `
+
+                    <span
+                        style="color:#9B91B4;"
+                    >
+                        No seats selected.
+                    </span>
+
+                `;
+
+                return;
+
+            }
+
+
+            selectedSeats.forEach(
+                seat => {
+
+                    const tag =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    tag.className =
+                        "seat-tag";
+
+
+                    tag.innerText =
+                        seat;
+
+
+                    container.appendChild(
+                        tag
+                    );
+
+                }
+            );
+
+        }
+
+
+        // ==========================================
+        // CALCULATE PRICE
+        // ==========================================
+
+        function calculatePrice() {
+
+            let regularCount = 0;
+
+            let reclinerCount = 0;
+
+
+            selectedSeats.forEach(
+                seat => {
+
+                    const row =
+                        seat.charAt(0)
+                            .toUpperCase();
+
+
+                    if (
+                        row === "A" ||
+                        row === "K"
+                    ) {
+
+                        reclinerCount++;
+
+                    } else {
+
+                        regularCount++;
+
+                    }
+
+                }
+            );
+
+
+            const regularAmount =
+                regularCount *
+                REGULAR_PRICE;
+
+
+            const reclinerAmount =
+                reclinerCount *
+                RECLINER_PRICE;
+
+
+            const total =
+                regularAmount +
+                reclinerAmount;
+
+
+            document.getElementById(
+                "regularCount"
+            ).innerText =
+                regularCount;
+
+
+            document.getElementById(
+                "reclinerCount"
+            ).innerText =
+                reclinerCount;
+
+
+            document.getElementById(
+                "regularAmount"
+            ).innerText =
+                "₹" +
+                regularAmount;
+
+
+            document.getElementById(
+                "reclinerAmount"
+            ).innerText =
+                "₹" +
+                reclinerAmount;
+
+
+            document.getElementById(
+                "totalAmount"
+            ).innerText =
+                "₹" +
+                total;
+
+
+            if (
+                regularCount === 0
+            ) {
+
+                document.getElementById(
+                    "regularRow"
+                ).style.display =
+                    "none";
+
+            }
+
+
+            if (
+                reclinerCount === 0
+            ) {
+
+                document.getElementById(
+                    "reclinerRow"
+                ).style.display =
+                    "none";
+
+            }
+
+        }
+
+
+        // ==========================================
+        // BACK TO SEATS
+        // ==========================================
+
+        function goBack() {
+
+            window.history.back();
+
+        }
+
+
+        // ==========================================
+        // PROCEED TO PAYMENT
+        // ==========================================
+
+        function proceedToPayment() {
+
+            const total =
+                document.getElementById(
+                    "totalAmount"
+                ).innerText
+                    .replace("₹", "")
+                    .trim();
+
+
+            window.location.href =
+
+                "payment.html" +
+
+                "?show_id=" +
+                encodeURIComponent(
+                    showId
+                ) +
+		"&movie_id=" +
+encodeURIComponent(
+    movieId
+) +
+"&movie_title=" +
+encodeURIComponent(
+    movieTitle
+) +
+
+                "&screen=" +
+                encodeURIComponent(
+                    screen
+                ) +
+
+                "&variation=" +
+                encodeURIComponent(
+                    variation
+                ) +
+
+                "&time=" +
+                encodeURIComponent(
+                    time
+                ) +
+
+                "&date=" +
+                encodeURIComponent(
+                    date
+                ) +
+
+                "&seats=" +
+                encodeURIComponent(
+                    selectedSeats.join(",")
+                ) +
+
+                "&total=" +
+                encodeURIComponent(
+                    total
+                );
+
+        }
+
+
+        // ==========================================
+        // START
+        // ==========================================
+
+        displaySeats();
+
+        calculatePrice();
+
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CineHub Register</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1b1330;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+	#registerMessage {
+    		display: none;
+    		color: #00ff88;
+    		background: #062b1a;
+    		padding: 12px;
+    		margin-bottom: 15px;
+    		border-radius: 6px;
+    		text-align: center;
+	}
+
+        .register-box {
+            background: white;
+            color: #1b1330;
+            padding: 40px;
+            width: 350px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #f0c33c;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        a {
+            color: #a5384a;
+            font-weight: bold;
+        }
+	::selection {
+    background: #F4C43D;
+    color: #171129;
+}
+
+::-moz-selection {
+    background: #F4C43D;
+    color: #171129;
+}
+    </style>
+</head>
+
+<body>
+
+    <div class="register-box">
+
+        <h1>🎬 CineHub</h1>
+
+        <h2>Create Account</h2>
+
+	<div id="registerMessage"></div>
+
+        <form action="/register" method="POST">
+
+            <label>Name</label>
+
+            <input
+                type="text"
+                name="name"
+                placeholder="Enter your name"
+                required
+            >
+
+            <label>Email</label>
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+            <label>Password</label>
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Create a password"
+                required
+            >
+
+            <button type="submit">
+                Create Account
+            </button>
+
+        </form>
+
+        <div class="login">
+            Already have an account?
+            <a href="/login.html">Login</a>
+        </div>
+
+    </div>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const message = document.getElementById("registerMessage");
+
+    if (params.get("success") === "1") {
+        message.textContent =
+            "✅ Registration successful! You can now login.";
+        message.style.display = "block";
+    }
+
+    if (params.get("error") === "email") {
+        message.textContent =
+            "❌ Email already registered. Please use another email.";
+        message.style.display = "block";
+    }
+</script>
+</body>
+</html>

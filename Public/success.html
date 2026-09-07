@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>CineHub - Booking Confirmed</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #171129;
+
+            color: #F7F1E8;
+
+            min-height: 100vh;
+
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        header {
+
+            height: 75px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            background: #171129;
+
+            border-bottom: 1px solid #3b3155;
+
+        }
+
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 25px;
+
+            font-weight: bold;
+
+            color: #F4C43D;
+
+        }
+
+
+        /* =========================================
+           LOGO
+        ========================================= */
+
+        .logo-icon {
+
+            position: relative;
+
+            width: 42px;
+
+            height: 42px;
+
+            border: 3px solid #F4C43D;
+
+            border-radius: 50%;
+
+        }
+
+
+        .logo-play {
+
+            position: absolute;
+
+            left: 50%;
+
+            top: 50%;
+
+            transform:
+                translate(-40%, -50%);
+
+            width: 0;
+
+            height: 0;
+
+            border-top:
+                8px solid transparent;
+
+            border-bottom:
+                8px solid transparent;
+
+            border-left:
+                12px solid #F4C43D;
+
+            z-index: 2;
+
+        }
+
+
+        .logo-dot {
+
+            position: absolute;
+
+            width: 5px;
+
+            height: 5px;
+
+            background: #F4C43D;
+
+            border-radius: 50%;
+
+            z-index: 3;
+
+        }
+
+
+        .dot-top {
+
+            top: 3px;
+
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+        }
+
+
+        .dot-right {
+
+            right: 3px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+        }
+
+
+        .dot-bottom {
+
+            bottom: 3px;
+
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+        }
+
+
+        .dot-left {
+
+            left: 3px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+        }
+
+
+        .home-btn {
+
+            text-decoration: none;
+
+            color: #F4C43D;
+
+            border: 1px solid #F4C43D;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+
+        }
+
+
+        .home-btn:hover {
+
+            background: #F4C43D;
+
+            color: #171129;
+
+        }
+
+
+        /* =========================================
+           MAIN
+        ========================================= */
+
+        .container {
+
+            width: 92%;
+
+            max-width: 750px;
+
+            margin: 55px auto;
+
+        }
+
+
+        .success-card {
+
+            background: #21183A;
+
+            border: 1px solid #3b3155;
+
+            border-radius: 22px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.35);
+
+        }
+
+
+        /* =========================================
+           SUCCESS ICON
+        ========================================= */
+
+        .success-icon {
+
+            width: 80px;
+
+            height: 80px;
+
+            margin: 0 auto 20px;
+
+            border-radius: 50%;
+
+            background: #F4C43D;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #171129;
+
+            font-size: 45px;
+
+            font-weight: bold;
+
+        }
+
+
+        .success-title {
+
+            text-align: center;
+
+            color: #F4C43D;
+
+            font-size: 32px;
+
+            margin: 0;
+
+        }
+
+
+        .success-subtitle {
+
+            text-align: center;
+
+            color: #BDB5CC;
+
+            margin: 12px 0 30px;
+
+        }
+
+
+        /* =========================================
+           BOOKING REFERENCE
+        ========================================= */
+
+        .reference-box {
+
+            background: #171129;
+
+            border: 1px solid #F4C43D;
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .reference-label {
+
+            color: #9B91B4;
+
+            font-size: 13px;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .reference {
+
+            color: #F4C43D;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+        }
+
+
+        /* =========================================
+           DETAILS
+        ========================================= */
+
+        .details {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 14px;
+
+        }
+
+
+        .detail {
+
+            background: #171129;
+
+            border: 1px solid #3b3155;
+
+            border-radius: 11px;
+
+            padding: 16px;
+
+        }
+
+
+        .detail-label {
+
+            color: #9B91B4;
+
+            font-size: 12px;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .detail-value {
+
+            color: #F7F1E8;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+        }
+
+
+        /* =========================================
+           SEATS
+        ========================================= */
+
+        .section-title {
+
+            color: #F4C43D;
+
+            margin:
+                28px 0 12px;
+
+            font-size: 18px;
+
+        }
+
+
+        .seat-list {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 9px;
+
+        }
+
+
+        .seat {
+
+            background: #F4C43D;
+
+            color: #171129;
+
+            padding: 9px 14px;
+
+            border-radius: 7px;
+
+            font-weight: bold;
+
+        }
+
+
+        /* =========================================
+           AMOUNT
+        ========================================= */
+
+        .amount-box {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-top: 1px solid #3b3155;
+
+            margin-top: 28px;
+
+            padding-top: 22px;
+
+        }
+
+
+        .amount-label {
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+        }
+
+
+        .amount {
+
+            color: #F4C43D;
+
+            font-size: 28px;
+
+            font-weight: bold;
+
+        }
+
+
+        /* =========================================
+           BUTTONS
+        ========================================= */
+
+        .buttons {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 30px;
+
+        }
+
+
+        .btn {
+
+            flex: 1;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
+            font-weight: bold;
+
+            font-size: 16px;
+
+        }
+
+
+        .home-main {
+
+            background: #F4C43D;
+
+            color: #171129;
+
+        }
+
+
+        .home-main:hover {
+
+            background: #ffd85d;
+
+        }
+
+
+        .print-btn {
+
+            background: transparent;
+
+            color: #F7F1E8;
+
+            border: 1px solid #6a5c82;
+
+            cursor: pointer;
+
+        }
+
+
+        .print-btn:hover {
+
+            color: #F4C43D;
+
+            border-color: #F4C43D;
+
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .footer {
+
+            text-align: center;
+
+            color: #716985;
+
+            font-size: 13px;
+
+            margin-top: 30px;
+
+        }
+
+
+        /* =========================================
+           PRINT
+        ========================================= */
+
+        @media print {
+
+            body {
+
+                background: white;
+
+                color: black;
+
+            }
+
+
+            header,
+            .buttons,
+            .footer {
+
+                display: none;
+
+            }
+
+
+            .container {
+
+                width: 100%;
+
+                margin: 0;
+
+            }
+
+
+            .success-card {
+
+                box-shadow: none;
+
+                border: 1px solid #ccc;
+
+                color: black;
+
+            }
+
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 650px) {
+
+            header {
+
+                padding: 0 20px;
+
+            }
+
+
+            .container {
+
+                width: 95%;
+
+                margin:
+                    30px auto;
+
+            }
+
+
+            .success-card {
+
+                padding: 22px;
+
+            }
+
+
+            .details {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .buttons {
+
+                flex-direction: column;
+
+            }
+
+
+            .success-title {
+
+                font-size: 27px;
+
+            }
+
+        }
+.logo-text {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.logo-text .cine {
+  color: #f7f1e8;   /* WHITE */
+}
+
+.logo-text .hub {
+  color: #f4c43d;   /* GOLD */
+}
+
+::selection {
+    background: #F4C43D;
+    color: #171129;
+}
+
+::-moz-selection {
+    background: #F4C43D;
+    color: #171129;
+}
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         HEADER
+    ========================================= -->
+
+    <header>
+
+        <div class="logo">
+
+            <div class="logo-icon">
+
+                <div class="logo-play"></div>
+
+                <div class="logo-dot dot-top"></div>
+
+                <div class="logo-dot dot-right"></div>
+
+                <div class="logo-dot dot-bottom"></div>
+
+                <div class="logo-dot dot-left"></div>
+
+            </div>
+
+           <div class="logo-text">
+  <span class="cine">CINE</span><span class="hub">HUB</span>
+</div>
+
+        </div>
+
+
+        <a
+            href="index.html"
+            class="home-btn"
+        >
+            HOME
+        </a>
+
+    </header>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================= -->
+
+    <main class="container">
+
+        <div class="success-card">
+
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+
+            <h1 class="success-title">
+                Booking Confirmed!
+            </h1>
+
+
+            <p class="success-subtitle">
+                Your CineHub booking has been successfully completed.
+            </p>
+
+
+            <!-- =====================================
+                 REFERENCE
+            ====================================== -->
+
+            <div class="reference-box">
+
+                <div class="reference-label">
+                    BOOKING REFERENCE
+                </div>
+
+
+                <div
+                    class="reference"
+                    id="reference"
+                >
+                    --
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 DETAILS
+            ====================================== -->
+
+            <div class="details">
+
+
+                <div class="detail">
+
+                    <div class="detail-label">
+                        MOVIE
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="movieName"
+                    >
+                        --
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <div class="detail-label">
+                        DATE
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="showDate"
+                    >
+                        --
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <div class="detail-label">
+                        TIME
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="showTime"
+                    >
+                        --
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <div class="detail-label">
+                        SCREEN
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="screen"
+                    >
+                        --
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <div class="detail-label">
+                        FORMAT
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="variation"
+                    >
+                        --
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <div class="detail-label">
+                        PAYMENT
+                    </div>
+
+                    <div
+                        class="detail-value"
+                        id="paymentMethod"
+                    >
+                        Demo Payment
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 SEATS
+            ====================================== -->
+
+            <div class="section-title">
+                BOOKED SEATS
+            </div>
+
+
+            <div
+                class="seat-list"
+                id="seatList"
+            ></div>
+
+
+            <!-- =====================================
+                 TOTAL
+            ====================================== -->
+
+            <div class="amount-box">
+
+                <div class="amount-label">
+                    Total Amount
+                </div>
+
+
+                <div class="amount">
+
+                    ₹<span id="total">
+                        0
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 BUTTONS
+            ====================================== -->
+
+            <div class="buttons">
+
+
+                <a
+                    href="index.html"
+                    class="btn home-main"
+                >
+                    BACK TO HOME
+                </a>
+
+
+                <button
+                    class="btn print-btn"
+                    onclick="window.print()"
+                >
+                    PRINT TICKET
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer">
+            © 2026 CineHub — Book. Watch. Enjoy.
+        </div>
+
+    </main>
+
+
+    <script>
+
+        /* =========================================
+           GET URL PARAMETERS
+        ========================================= */
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const reference =
+            params.get(
+                "reference"
+            );
+
+
+        const movieId =
+            params.get(
+                "movie_id"
+            );
+
+
+        const showId =
+            params.get(
+                "show_id"
+            );
+
+
+        const screen =
+            params.get(
+                "screen"
+            );
+
+
+        const variation =
+            params.get(
+                "variation"
+            );
+
+
+        const time =
+            params.get(
+                "time"
+            );
+
+
+        const date =
+            params.get(
+                "date"
+            );
+
+
+        const seats =
+            params.get(
+                "seats"
+            ) || "";
+
+
+        const total =
+            params.get(
+                "total"
+            ) || "0";
+
+
+        /* =========================================
+           DISPLAY DATA
+        ========================================= */
+
+        document.getElementById(
+            "reference"
+        ).textContent =
+            reference || "CH-DEMO";
+
+
+        document.getElementById(
+            "showDate"
+        ).textContent =
+            date || "-";
+
+
+        document.getElementById(
+            "showTime"
+        ).textContent =
+            time || "-";
+
+
+        document.getElementById(
+            "screen"
+        ).textContent =
+            screen || "-";
+
+
+        document.getElementById(
+            "variation"
+        ).textContent =
+            variation || "-";
+
+
+        document.getElementById(
+            "total"
+        ).textContent =
+            total;
+
+
+        /* =========================================
+           DISPLAY SEATS
+        ========================================= */
+
+        const seatArray =
+            seats
+                .split(",")
+                .map(
+                    seat =>
+                        seat.trim()
+                )
+                .filter(Boolean);
+
+
+        const seatList =
+            document.getElementById(
+                "seatList"
+            );
+
+
+        if (
+            seatArray.length === 0
+        ) {
+
+            seatList.innerHTML = `
+
+                <span
+                    style="
+                        color:#9B91B4;
+                    "
+                >
+                    No seat information
+                </span>
+
+            `;
+
+        } else {
+
+            seatArray.forEach(
+                seatName => {
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+                    div.className =
+                        "seat";
+
+                    div.textContent =
+                        seatName;
+
+                    seatList.appendChild(
+                        div
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================================
+           LOAD MOVIE NAME
+        ========================================= */
+
+        fetch("/api/movies")
+
+            .then(
+                response =>
+                    response.json()
+            )
+
+            .then(
+                movies => {
+
+                    const movie =
+                        movies.find(
+                            item =>
+                                String(
+                                    item.id
+                                ) ===
+                                String(
+                                    movieId
+                                )
+                        );
+
+
+                    document.getElementById(
+                        "movieName"
+                    ).textContent =
+                        movie
+                            ? movie.title
+                            : "Movie";
+
+                }
+            )
+
+            .catch(() => {
+
+                document.getElementById(
+                    "movieName"
+                ).textContent =
+                    "Movie";
+
+            });
+
+    </script>
+
+
+</body>
+
+</html>

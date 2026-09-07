@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CineHub - Shows</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #171129;
+            color: #F7F1E8;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            height: 86px;
+            background: #171129;
+            border-bottom: 1px solid #34294D;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 7%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+
+            border: 4px solid #F4C43D;
+            border-radius: 50%;
+
+            position: relative;
+        }
+
+        .logo-play {
+            position: absolute;
+
+            left: 14px;
+            top: 11px;
+
+            width: 0;
+            height: 0;
+
+            border-top: 9px solid transparent;
+            border-bottom: 9px solid transparent;
+            border-left: 14px solid #F4C43D;
+        }
+
+        .logo-text {
+            font-size: 25px;
+            font-weight: 900;
+            color: #F7F1E8;
+        }
+
+        .logo-text span {
+            color: #F4C43D;
+        }
+
+        .logo-dot {
+            position: absolute;
+
+            width: 5px;
+            height: 5px;
+
+            background: #F4C43D;
+
+            border-radius: 50%;
+        }
+
+        .dot-top {
+            left: 50%;
+            top: 2px;
+            transform: translateX(-50%);
+        }
+
+        .dot-right {
+            right: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .dot-bottom {
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%);
+        }
+
+        .dot-left {
+            left: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .back-btn {
+            text-decoration: none;
+
+            background: #F4C43D;
+            color: #171129;
+
+            padding: 12px 27px;
+
+            border-radius: 25px;
+
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .page {
+            width: 84%;
+            max-width: 1100px;
+
+            margin: auto;
+
+            padding: 50px 0;
+        }
+
+        .small-title {
+            color: #9B91B4;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            letter-spacing: 5px;
+
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        h1 span {
+            color: #F4C43D;
+        }
+
+        #movieTitle {
+            color: #F4C43D;
+
+            font-size: 22px;
+
+            margin-bottom: 35px;
+        }
+
+        /* =========================
+           DATE
+        ========================= */
+
+        .date-title {
+            color: #9B91B4;
+
+            font-size: 13px;
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 15px;
+        }
+
+        .date-container {
+            display: grid;
+
+            grid-template-columns:
+                repeat(7, minmax(0, 1fr));
+
+            gap: 10px;
+
+            margin-bottom: 40px;
+
+            width: 100%;
+        }
+
+        .date-btn {
+            background: #21183A;
+            color: #F7F1E8;
+
+            border: 1px solid #34294D;
+
+            border-radius: 8px;
+
+            padding: 14px 8px;
+
+            min-height: 85px;
+            width: 100%;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .date-btn:hover {
+            border-color: #F4C43D;
+
+            transform: translateY(-2px);
+        }
+
+        .date-btn.active {
+            background: #F4C43D;
+
+            color: #171129;
+
+            border-color: #F4C43D;
+        }
+
+        .date-day {
+            display: block;
+
+            font-size: 12px;
+            font-weight: bold;
+
+            margin-bottom: 6px;
+        }
+
+        .date-number {
+            display: block;
+
+            font-size: 23px;
+            font-weight: 900;
+        }
+
+        .date-month {
+            display: block;
+
+            font-size: 11px;
+            font-weight: bold;
+
+            margin-top: 4px;
+
+            text-transform: uppercase;
+        }
+
+        /* =========================
+           VARIATION
+        ========================= */
+
+        .variation-section {
+            background: #21183A;
+
+            border: 1px solid #34294D;
+
+            border-radius: 10px;
+
+            padding: 25px;
+
+            margin-bottom: 25px;
+        }
+
+        .variation-title {
+            color: #9B91B4;
+
+            font-size: 13px;
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 15px;
+        }
+
+        .variation-buttons {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 12px;
+        }
+
+        .variation-btn {
+            background: transparent;
+
+            color: #F4C43D;
+
+            border: 1px solid #F4C43D;
+
+            padding: 12px 30px;
+
+            border-radius: 6px;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .variation-btn:hover {
+            background: #F4C43D;
+
+            color: #171129;
+        }
+
+        .variation-btn.active {
+            background: #F4C43D;
+
+            color: #171129;
+        }
+
+        /* =========================
+           SCREEN CARD
+        ========================= */
+
+        #screenContainer {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 20px;
+        }
+
+        .screen-card {
+            background: #21183A;
+
+            border: 1px solid #34294D;
+
+            border-radius: 10px;
+
+            padding: 28px;
+
+            transition: 0.2s;
+        }
+
+        .screen-card:hover {
+            border-color: #F4C43D;
+        }
+
+        .screen-name {
+            font-size: 25px;
+
+            color: #F7F1E8;
+
+            margin-bottom: 8px;
+        }
+
+        .location {
+            color: #9B91B4;
+
+            font-size: 14px;
+
+            margin-bottom: 22px;
+        }
+
+        .show-title {
+            color: #9B91B4;
+
+            font-size: 13px;
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 12px;
+        }
+
+        .shows {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 12px;
+        }
+
+        .show-btn {
+            background: transparent;
+
+            color: #F4C43D;
+
+            border: 1px solid #F4C43D;
+
+            padding: 11px 20px;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .show-btn:hover {
+            background: #F4C43D;
+
+            color: #171129;
+
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           LOADING / ERROR
+        ========================= */
+
+        #loading {
+            text-align: center;
+
+            color: #9B91B4;
+
+            font-size: 18px;
+
+            padding: 40px 0;
+        }
+
+        #error {
+            text-align: center;
+
+            color: #F4C43D;
+
+            font-size: 18px;
+
+            padding: 30px 0;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            border-top: 1px solid #34294D;
+
+            margin-top: 50px;
+
+            padding: 25px;
+
+            text-align: center;
+
+            color: #716985;
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .date-container {
+                grid-template-columns:
+                    repeat(4, minmax(0, 1fr));
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .page {
+                width: 92%;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .date-container {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+::selection {
+    background: #F4C43D;
+    color: #171129;
+}
+
+::-moz-selection {
+    background: #F4C43D;
+    color: #171129;
+}
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header>
+
+        <div class="logo">
+
+            <div class="logo-icon">
+
+                <div class="logo-play"></div>
+
+                <div class="logo-dot dot-top"></div>
+                <div class="logo-dot dot-right"></div>
+                <div class="logo-dot dot-bottom"></div>
+                <div class="logo-dot dot-left"></div>
+
+            </div>
+
+            <div class="logo-text">
+
+                CINE<span>HUB</span>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="movies.html"
+            class="back-btn"
+        >
+
+            MOVIES
+
+        </a>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="page">
+
+
+        <div class="small-title">
+
+            AVAILABLE SHOWS
+
+        </div>
+
+
+        <h1>
+
+            CHOOSE YOUR <span>SHOW.</span>
+
+        </h1>
+
+
+        <h2 id="movieTitle">
+
+            Loading movie...
+
+        </h2>
+
+
+        <!-- =====================
+             DATE
+        ====================== -->
+
+        <div class="date-title">
+
+            SELECT DATE
+
+        </div>
+
+
+        <div
+            class="date-container"
+            id="dateContainer"
+        >
+        </div>
+
+
+        <!-- =====================
+             LOADING
+        ====================== -->
+
+        <div id="loading">
+
+            Loading shows...
+
+        </div>
+
+
+        <div id="error"></div>
+
+
+        <!-- =====================
+             VARIATION + SCREENS
+        ====================== -->
+
+        <div id="theatresContainer"></div>
+
+
+    </main>
+
+
+    <footer>
+
+        © 2026 CineHub — Book. Watch. Enjoy.
+
+    </footer>
+
+
+    <script>
+
+
+        // ==================================================
+        // GET MOVIE ID FROM URL
+        // ==================================================
+
+        const urlParams =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const movieId =
+            urlParams.get(
+                "movie_id"
+            );
+
+
+        // ==================================================
+        // GLOBAL VARIABLES
+        // ==================================================
+
+        let allShows = [];
+
+        let selectedDate = "";
+
+        let selectedVariation = "";
+
+        let variations = {};
+
+
+        // ==================================================
+        // NORMALIZE MYSQL DATE
+        // ==================================================
+
+        function normalizeDate(value) {
+
+            if (!value) {
+                return "";
+            }
+
+
+            const text =
+                String(value);
+
+
+            const match =
+                text.match(
+                    /(\d{4})-(\d{2})-(\d{2})/
+                );
+
+
+            if (!match) {
+
+                return "";
+
+            }
+
+
+            return (
+                match[1] +
+                "-" +
+                match[2] +
+                "-" +
+                match[3]
+            );
+
+        }
+
+
+        // ==================================================
+        // LOCAL DATE STRING
+        // ==================================================
+
+        function getLocalDateString(date) {
+
+            const year =
+                date.getFullYear();
+
+
+            const month =
+                String(
+                    date.getMonth() + 1
+                ).padStart(2, "0");
+
+
+            const day =
+                String(
+                    date.getDate()
+                ).padStart(2, "0");
+
+
+            return (
+                year +
+                "-" +
+                month +
+                "-" +
+                day
+            );
+
+        }
+
+
+        // ==================================================
+        // CREATE EXACTLY 7 ROLLING DATES
+        //
+        // TOMORROW + NEXT 6 DAYS
+        // ==================================================
+
+        function createDates() {
+
+            const container =
+                document.getElementById(
+                    "dateContainer"
+                );
+
+
+            container.innerHTML =
+                "";
+
+
+            const today =
+                new Date();
+
+
+            today.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+
+
+            /*
+             * We start from TOMORROW.
+             *
+             * Example:
+             *
+             * Today = Thu 3
+             *
+             * Fri 4
+             * Sat 5
+             * Sun 6
+             * Mon 7
+             * Tue 8
+             * Wed 9
+             * Thu 10
+             *
+             * TOTAL = 7 DAYS
+             */
+
+
+            const dates = [];
+
+
+            for (
+                let i = 0;
+                i <= 6;
+                i++
+            ) {
+
+                const date =
+                    new Date(today);
+
+
+                date.setDate(
+                    today.getDate() + i
+                );
+
+
+                dates.push(date);
+
+            }
+
+
+            /*
+             * Select first date
+             */
+
+            selectedDate =
+                getLocalDateString(
+                    dates[0]
+                );
+
+
+            /*
+             * Create all 7 buttons
+             */
+
+            dates.forEach(
+                (date, index) => {
+
+
+                    const dateString =
+                        getLocalDateString(
+                            date
+                        );
+
+
+                    const dateObject =
+                        new Date(
+                            date.getFullYear(),
+                            date.getMonth(),
+                            date.getDate()
+                        );
+
+
+                    const dayName =
+                        dateObject.toLocaleDateString(
+                            "en-IN",
+                            {
+                                weekday: "short"
+                            }
+                        );
+
+
+                    const monthName =
+                        dateObject.toLocaleDateString(
+                            "en-IN",
+                            {
+                                month: "short"
+                            }
+                        );
+
+
+                    const dateNumber =
+                        dateObject.getDate();
+
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    button.type =
+                        "button";
+
+
+                    button.className =
+                        "date-btn";
+
+
+                    /*
+                     * First date active
+                     */
+
+                    if (
+                        index === 0
+                    ) {
+
+                        button.classList.add(
+                            "active"
+                        );
+
+                    }
+
+
+                    button.innerHTML = `
+
+                        <span class="date-day">
+
+                            ${dayName}
+
+                        </span>
+
+
+                        <span class="date-number">
+
+                            ${dateNumber}
+
+                        </span>
+
+
+                        <span class="date-month">
+
+                            ${monthName}
+
+                        </span>
+
+                    `;
+
+
+                    button.onclick =
+                        function() {
+
+                            selectDate(
+                                dateString,
+                                button
+                            );
+
+                        };
+
+
+                    container.appendChild(
+                        button
+                    );
+
+                }
+            );
+
+        }
+
+
+        // ==================================================
+        // LOAD SHOWS
+        // ==================================================
+
+        async function loadShows() {
+
+            const loading =
+                document.getElementById(
+                    "loading"
+                );
+
+
+            const error =
+                document.getElementById(
+                    "error"
+                );
+
+
+            if (!movieId) {
+
+                loading.style.display =
+                    "none";
+
+
+                error.innerText =
+                    "No movie selected.";
+
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+
+                        "/api/movies/" +
+                        movieId +
+                        "/shows"
+
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load shows"
+                    );
+
+                }
+
+
+                allShows =
+                    await response.json();
+
+
+                loading.style.display =
+                    "none";
+
+
+                if (
+                    !allShows ||
+                    allShows.length === 0
+                ) {
+
+                    error.innerText =
+                        "No shows available for this movie.";
+
+
+                    return;
+
+                }
+
+
+                // ==========================================
+                // NORMALIZE ALL DATES
+                // ==========================================
+
+                allShows =
+                    allShows.map(
+                        show => {
+
+                            return {
+
+                                ...show,
+
+                                show_date:
+                                    normalizeDate(
+                                        show.show_date
+                                    )
+
+                            };
+
+                        }
+                    );
+
+
+                // ==========================================
+                // MOVIE TITLE
+                // ==========================================
+
+                document.getElementById(
+                    "movieTitle"
+                ).innerText =
+                    allShows[0].title;
+
+
+                // ==========================================
+                // CREATE EXACTLY 7 DATES
+                // ==========================================
+
+                createDates();
+
+
+                // ==========================================
+                // SHOW FIRST DATE
+                // ==========================================
+
+                showDate(
+                    selectedDate
+                );
+
+            }
+
+
+            catch (err) {
+
+                loading.style.display =
+                    "none";
+
+
+                error.innerText =
+                    "Unable to load shows. Please check the server.";
+
+
+                console.error(err);
+
+            }
+
+        }
+
+
+        // ==================================================
+        // SELECT DATE
+        // ==================================================
+
+        function selectDate(
+            date,
+            button
+        ) {
+
+            selectedDate =
+                date;
+
+
+            document
+                .querySelectorAll(
+                    ".date-btn"
+                )
+                .forEach(
+                    btn => {
+
+                        btn.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+            button.classList.add(
+                "active"
+            );
+
+
+            /*
+             * IMPORTANT:
+             * This keeps the existing
+             * screen/variation/showtime logic.
+             */
+
+            showDate(
+                date
+            );
+
+        }
+
+
+        // ==================================================
+        // SHOW SELECTED DATE
+        // ==================================================
+
+        function showDate(
+            date
+        ) {
+
+            const container =
+                document.getElementById(
+                    "theatresContainer"
+                );
+
+
+            // ==============================================
+            // ONLY SHOW SELECTED DATE
+            // ==============================================
+
+            const dateShows =
+                allShows.filter(
+                    show => {
+
+                        return (
+                            show.show_date ===
+                            date
+                        );
+
+                    }
+                );
+
+
+            /*
+             * If there are no shows for this date
+             */
+
+            if (
+                dateShows.length === 0
+            ) {
+
+                container.innerHTML = `
+
+                    <div id="error">
+
+                        No shows available for this date.
+
+                    </div>
+
+                `;
+
+
+                return;
+
+            }
+
+
+            // ==============================================
+            // GROUP:
+            //
+            // VARIATION
+            //      ↓
+            // SCREEN
+            //      ↓
+            // SHOW TIMES
+            // ==============================================
+
+            variations = {};
+
+
+            dateShows.forEach(
+                show => {
+
+
+                    const variation =
+                        show.variation;
+
+
+                    const screenId =
+                        show.screen_id;
+
+
+                    if (
+                        !variations[
+                            variation
+                        ]
+                    ) {
+
+                        variations[
+                            variation
+                        ] = {};
+
+                    }
+
+
+                    if (
+                        !variations[
+                            variation
+                        ][
+                            screenId
+                        ]
+                    ) {
+
+                        variations[
+                            variation
+                        ][
+                            screenId
+                        ] = {
+
+                            screen_name:
+                                show.screen_name,
+
+                            city:
+                                show.city,
+
+                            shows:
+                                []
+
+                        };
+
+                    }
+
+
+                    variations[
+                        variation
+                    ][
+                        screenId
+                    ]
+                    .shows
+                    .push({
+
+                        id:
+                            show.show_id,
+
+                        time:
+                            show.show_time
+
+                    });
+
+                }
+            );
+
+
+            const variationNames =
+                Object.keys(
+                    variations
+                );
+
+
+            if (
+                variationNames.length === 0
+            ) {
+
+                container.innerHTML = `
+
+                    <div id="error">
+
+                        No variations available.
+
+                    </div>
+
+                `;
+
+
+                return;
+
+            }
+
+
+            selectedVariation =
+                variationNames[0];
+
+
+            createVariationSection(
+                variationNames
+            );
+
+
+            showVariation(
+                selectedVariation
+            );
+
+        }
+
+
+        // ==================================================
+        // CREATE VARIATION BUTTONS
+        // ==================================================
+
+        function createVariationSection(
+            variationNames
+        ) {
+
+            const container =
+                document.getElementById(
+                    "theatresContainer"
+                );
+
+
+            container.innerHTML = `
+
+                <div class="variation-section">
+
+                    <div class="variation-title">
+
+                        SELECT VARIATION
+
+                    </div>
+
+
+                    <div
+                        class="variation-buttons"
+                        id="variationButtons"
+                    >
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="screenContainer"
+                >
+
+                </div>
+
+            `;
+
+
+            const buttonContainer =
+                document.getElementById(
+                    "variationButtons"
+                );
+
+
+            variationNames.forEach(
+                (variation, index) => {
+
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    button.type =
+                        "button";
+
+
+                    button.className =
+                        "variation-btn";
+
+
+                    if (
+                        index === 0
+                    ) {
+
+                        button.classList.add(
+                            "active"
+                        );
+
+                    }
+
+
+                    button.innerText =
+                        variation;
+
+
+                    button.onclick =
+                        function() {
+
+
+                            selectedVariation =
+                                variation;
+
+
+                            document
+                                .querySelectorAll(
+                                    ".variation-btn"
+                                )
+                                .forEach(
+                                    btn => {
+
+                                        btn
+                                            .classList
+                                            .remove(
+                                                "active"
+                                            );
+
+                                    }
+                                );
+
+
+                            button.classList.add(
+                                "active"
+                            );
+
+
+                            showVariation(
+                                variation
+                            );
+
+                        };
+
+
+                    buttonContainer
+                        .appendChild(
+                            button
+                        );
+
+                }
+            );
+
+        }
+
+
+        // ==================================================
+        // SHOW VARIATION
+        // ==================================================
+
+        function showVariation(
+            variation
+        ) {
+
+            const container =
+                document.getElementById(
+                    "screenContainer"
+                );
+
+
+            if (!container) {
+
+                return;
+
+            }
+
+
+            container.innerHTML =
+                "";
+
+
+            const screens =
+                variations[
+                    variation
+                ];
+
+
+            if (!screens) {
+
+                return;
+
+            }
+
+
+            Object.keys(
+                screens
+            )
+            .forEach(
+                screenId => {
+
+
+                    const screen =
+                        screens[
+                            screenId
+                        ];
+
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "screen-card";
+
+
+                    let showButtons =
+                        "";
+
+
+                    // ======================================
+                    // REMOVE DUPLICATE TIMES
+                    // ======================================
+
+                    const uniqueShows =
+                        [];
+
+
+                    const seen =
+                        new Set();
+
+
+                    screen.shows.forEach(
+                        show => {
+
+
+                            const key =
+                                show.id +
+                                "-" +
+                                show.time;
+
+
+                            if (
+                                !seen.has(
+                                    key
+                                )
+                            ) {
+
+                                seen.add(
+                                    key
+                                );
+
+
+                                uniqueShows.push(
+                                    show
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                    // ======================================
+                    // CREATE SHOW BUTTONS
+                    // ======================================
+
+                    // ======================================
+// CREATE SHOW BUTTONS
+// HIDE COMPLETED SHOWS FOR TODAY
+// ======================================
+
+const now = new Date();
+
+const todayString = getLocalDateString(now);
+
+uniqueShows.forEach(
+    show => {
+
+        // Default: show is available
+        let showCompleted = false;
+
+        // Only check time when the selected date is TODAY
+        if (selectedDate === todayString) {
+
+            let timeText = String(show.time).trim();
+
+            // Convert 12-hour time to 24-hour time
+            const match = timeText.match(
+                /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i
+            );
+
+            if (match) {
+
+                let hours = parseInt(match[1]);
+                const minutes = parseInt(match[2]);
+                const period = match[3].toUpperCase();
+
+                if (period === "PM" && hours !== 12) {
+                    hours += 12;
+                }
+
+                if (period === "AM" && hours === 12) {
+                    hours = 0;
+                }
+
+                const showDateTime = new Date();
+
+                showDateTime.setHours(
+                    hours,
+                    minutes,
+                    0,
+                    0
+                );
+
+                // If show start time has passed, close it
+                if (showDateTime <= now) {
+                    showCompleted = true;
+                }
+            }
+        }
+
+        // Don't display completed shows
+        if (showCompleted) {
+            return;
+        }
+
+        // Create available show button
+        showButtons += `
+
+            <button
+                type="button"
+                class="show-btn"
+
+                onclick="selectShow(
+                    '${show.id}',
+                    '${screen.screen_name}',
+                    '${variation}',
+                    '${show.time}'
+                )"
+            >
+
+                ${show.time}
+
+            </button>
+
+        `;
+
+    }
+);
+
+
+                    card.innerHTML = `
+
+                        <h2 class="screen-name">
+
+                            ${screen.screen_name}
+
+                        </h2>
+
+
+                        <div class="location">
+
+                            ${screen.city}
+
+                        </div>
+
+
+                        <div class="show-title">
+
+                            SHOWTIMES
+
+                        </div>
+
+
+                        <div class="shows">
+
+                            ${showButtons}
+
+                        </div>
+
+                    `;
+
+
+                    container.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+
+        // ==================================================
+        // SELECT SHOW
+        // ==================================================
+
+        function selectShow(
+            showId,
+            screenName,
+            variation,
+            time
+        ) {
+const movieTitle =
+    document.getElementById(
+        "movieTitle"
+    ).innerText;
+
+            window.location.href =
+                "seats.html" +
+                "?show_id=" +
+                encodeURIComponent(showId) +
+                "&movie_id=" +
+                encodeURIComponent(movieId) +
+		"&movie_title=" +
+encodeURIComponent(
+    movieTitle
+) +
+                "&screen=" +
+                encodeURIComponent(screenName) +
+                "&variation=" +
+                encodeURIComponent(variation) +
+                "&time=" +
+                encodeURIComponent(time) +
+                "&date=" +
+                encodeURIComponent(selectedDate);
+
+        }
+
+
+        // ==================================================
+        // START
+        // ==================================================
+
+        loadShows();
+
+
+    </script>
+
+
+</body>
+
+</html>

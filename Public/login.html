@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CineHub Login</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #1b1330;
+            color: white;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            color: #1b1330;
+
+            padding: 40px;
+            width: 350px;
+            max-width: 100%;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1b1330;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: #1b1330;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+
+            margin: 10px 0 20px;
+
+            border: 1px solid #ccc;
+            border-radius: 6px;
+
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #f0c33c;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+
+            background: #f0c33c;
+            color: #1b1330;
+
+            border: none;
+            border-radius: 6px;
+
+            font-weight: bold;
+            font-size: 15px;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #d9a824;
+        }
+
+        /* =========================
+           LOGIN ERROR
+        ========================= */
+
+        #loginError {
+            color: #ff3333;
+            background: #2a0000;
+
+            padding: 10px;
+            margin-bottom: 15px;
+
+            border-radius: 6px;
+
+            text-align: center;
+
+            display: none;
+        }
+
+        /* =========================
+           FORGOT PASSWORD
+        ========================= */
+
+        .forgot {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .forgot a {
+            color: #a5384a;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .forgot a:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================
+           CREATE ACCOUNT
+        ========================= */
+
+        .register {
+            text-align: center;
+            margin-top: 22px;
+            color: #1b1330;
+        }
+
+        .register p {
+            margin: 0;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .create-account {
+            color: #a5384a;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .create-account:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 450px) {
+
+            .login-box {
+                padding: 30px 25px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .register p {
+                font-size: 13px;
+            }
+
+        }
+	::selection {
+    background: #F4C43D;
+    color: #171129;
+}
+
+::-moz-selection {
+    background: #F4C43D;
+    color: #171129;
+}
+    </style>
+</head>
+
+
+<body>
+
+    <div class="login-box">
+
+        <h1>🎬 CineHub</h1>
+
+        <h2>Login</h2>
+
+
+        <!-- LOGIN ERROR -->
+
+        <div id="loginError"></div>
+
+
+        <!-- LOGIN FORM -->
+
+	<form action="/login" method="POST" onsubmit="sessionStorage.setItem('cinehubTab', 'true')">
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                id="email"
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+            >
+
+
+            <button type="submit">
+                Login
+            </button>
+
+
+            <!-- FORGOT PASSWORD -->
+
+            <div class="forgot">
+
+                <a href="/forgot-password.html">
+                    Forgot Password?
+                </a>
+
+            </div>
+
+        </form>
+
+
+        <!-- CREATE ACCOUNT -->
+
+        <div class="register">
+
+            <p>
+                Don't have an account?
+                <a
+                    href="/register.html"
+                    class="create-account"
+                >
+                    Create Account
+                </a>
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const urlParams =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        const errorBox =
+            document.getElementById(
+                "loginError"
+            );
+
+
+        /* =========================
+           INVALID LOGIN
+        ========================= */
+
+        if (
+            urlParams.get("error") === "1"
+        ) {
+
+            errorBox.textContent =
+                "❌ Invalid email or password";
+
+            errorBox.style.display =
+                "block";
+
+        }
+
+
+        /* =========================
+           PASSWORD RESET SUCCESS
+        ========================= */
+
+        if (
+            urlParams.get("reset") === "1"
+        ) {
+
+            errorBox.textContent =
+                "✅ Password reset successfully. Please login.";
+
+            errorBox.style.display =
+                "block";
+
+            errorBox.style.color =
+                "#42d66b";
+
+            errorBox.style.background =
+                "#092512";
+
+        }
+
+    </script>
+
+</body>
+</html>

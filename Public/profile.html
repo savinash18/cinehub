@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile - CineHub</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f0f0f;
+            color: white;
+        }
+
+        .profile-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-card {
+            background: #1b1b1b;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .profile-card h2 {
+            margin-top: 0;
+        }
+
+        .booking {
+            background: #292929;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            margin: 5px;
+        }
+
+        .back {
+            background: #444;
+            color: white;
+        }
+
+        .logout {
+            background: #e50914;
+            color: white;
+        }
+	/* =========================================
+   MY BOOKINGS
+========================================= */
+
+.booking-card {
+    background: #21183A;
+    border: 1px solid #3b3155;
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 14px;
+    transition: 0.2s;
+}
+
+.booking-card:hover {
+    border-color: #F4C43D;
+}
+
+.booking-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 14px;
+}
+
+.booking-movie {
+    color: #F4C43D;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.booking-status {
+    background: #F4C43D;
+    color: #171129;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.booking-reference {
+    color: #9B91B4;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.booking-reference span {
+    color: #F7F1E8;
+    font-weight: bold;
+}
+
+.booking-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.booking-item {
+    background: #171129;
+    border: 1px solid #3b3155;
+    border-radius: 8px;
+    padding: 11px;
+}
+
+.booking-item-label {
+    color: #8F86A3;
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.booking-item-value {
+    color: #F7F1E8;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.booking-seats {
+    margin-top: 15px;
+}
+
+.booking-seats-title {
+    color: #9B91B4;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.booking-seat {
+    display: inline-block;
+    background: #F4C43D;
+    color: #171129;
+    padding: 6px 9px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
+.booking-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #3b3155;
+    margin-top: 16px;
+    padding-top: 15px;
+}
+
+.booking-total-label {
+    color: #F7F1E8;
+    font-weight: bold;
+}
+
+.booking-total-value {
+    color: #F4C43D;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.no-bookings {
+    background: #292929;
+    color: #F7F1E8;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.booking-error {
+    background: #342044;
+    border: 1px solid #F4C43D;
+    color: #F7F1E8;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+
+    .booking-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .booking-info {
+        grid-template-columns: 1fr;
+    }
+
+}
+::selection {
+    background: #F4C43D;
+    color: #171129;
+}
+
+::-moz-selection {
+    background: #F4C43D;
+    color: #171129;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="profile-container">
+
+    <h1>👤 My Profile</h1>
+
+    <!-- Account -->
+    <div class="profile-card">
+        <h2>My Account</h2>
+
+        <p>
+            Username:
+            <span id="username">Loading...</span>
+        </p>
+
+        <p>
+            Email:
+            <span id="email">Loading...</span>
+        </p>
+    </div>
+
+    <!-- Activity -->
+    <div class="profile-card">
+        <h2>🎬 My Activity</h2>
+
+        <h3>Movie Bookings</h3>
+
+        <div id="bookings">
+            <div id="bookingsContainer">
+    <p style="color:#9B91B4;">
+        Loading bookings...
+    </p>
+</div>
+        </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons">
+
+        <button class="back" onclick="goBack()">
+            ← Back
+        </button>
+
+        <button class="logout" onclick="logout()">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+    // Get logged-in user
+    fetch("/user")
+        .then(response => response.json())
+        .then(data => {
+
+            if (!data.loggedIn) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            document.getElementById("username").textContent =
+                data.user.name || "User";
+
+            document.getElementById("email").textContent =
+                data.user.email || "Not available";
+
+        })
+        .catch(error => {
+            console.log("User loading failed:", error);
+        });
+
+
+    // Back to CineHub
+    function goBack() {
+        window.location.href = "index.html";
+    }
+
+
+    // Logout
+   function logout() {
+    fetch("/logout")
+        .then(() => {
+            window.location.href = "index.html";
+        })
+        .catch(error => {
+            console.log("Logout failed:", error);
+        });
+}
+
+</script>
+<script>
+
+    async function loadMyBookings() {
+
+        const container =
+            document.getElementById(
+                "bookingsContainer"
+            );
+
+        if (!container) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/my-bookings"
+                );
+
+
+            if (response.status === 401) {
+
+                container.innerHTML = `
+                    <div class="booking-error">
+                        Please login to view your bookings.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            const bookings =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    bookings.message ||
+                    "Failed to load bookings."
+                );
+
+            }
+
+
+            if (
+                !bookings ||
+                bookings.length === 0
+            ) {
+
+                container.innerHTML = `
+                    <div class="no-bookings">
+                        No bookings found.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            /* =====================================
+               GROUP SEATS BY BOOKING REFERENCE
+            ===================================== */
+
+            const grouped = {};
+
+
+            bookings.forEach(
+                booking => {
+
+                    const reference =
+                        booking.booking_reference;
+
+
+                    if (
+                        !grouped[reference]
+                    ) {
+
+                        grouped[reference] = {
+
+                            booking_reference:
+                                reference,
+
+                            movie_title:
+                                booking.movie_title,
+
+                            show_date:
+                                booking.show_date,
+
+                            show_time:
+                                booking.show_time,
+
+                            screen_name:
+                                booking.screen_name,
+
+                            variation:
+                                booking.variation,
+
+                            payment_method:
+                                booking.payment_method,
+
+                            payment_status:
+                                booking.payment_status,
+
+                            booked_at:
+                                booking.booked_at,
+
+                            seats: [],
+
+                            total: 0
+
+                        };
+
+                    }
+
+
+                    grouped[
+                        reference
+                    ].seats.push(
+
+                        booking.seat_row +
+                        booking.seat_number
+
+                    );
+
+
+                    grouped[
+                        reference
+                    ].total +=
+                        Number(
+                            booking.amount
+                        );
+
+                }
+            );
+
+
+            /* =====================================
+               DISPLAY BOOKINGS
+            ===================================== */
+
+            container.innerHTML = "";
+
+
+            Object.values(
+                grouped
+            ).forEach(
+                booking => {
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "booking-card";
+
+
+                    const seatsHTML =
+                        booking.seats
+                            .map(
+                                seat => `
+                                    <span class="booking-seat">
+                                        ${seat}
+                                    </span>
+                                `
+                            )
+                            .join("");
+
+
+                    card.innerHTML = `
+
+                        <div class="booking-top">
+
+                            <div class="booking-movie">
+                                ${booking.movie_title}
+                            </div>
+
+                            <div class="booking-status">
+                                CONFIRMED
+                            </div>
+
+                        </div>
+
+
+                        <div class="booking-reference">
+
+                            Booking Reference:
+
+                            <span>
+                                ${booking.booking_reference}
+                            </span>
+
+                        </div>
+
+
+                        <div class="booking-info">
+
+
+                            <div class="booking-item">
+
+                                <div class="booking-item-label">
+                                    DATE
+                                </div>
+
+                                <div class="booking-item-value">
+                                    ${booking.show_date}
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-item">
+
+                                <div class="booking-item-label">
+                                    TIME
+                                </div>
+
+                                <div class="booking-item-value">
+                                    ${booking.show_time}
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-item">
+
+                                <div class="booking-item-label">
+                                    SCREEN
+                                </div>
+
+                                <div class="booking-item-value">
+                                    ${booking.screen_name}
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-item">
+
+                                <div class="booking-item-label">
+                                    FORMAT
+                                </div>
+
+                                <div class="booking-item-value">
+                                    ${booking.variation}
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-item">
+
+                                <div class="booking-item-label">
+                                    PAYMENT
+                                </div>
+
+                                <div class="booking-item-value">
+                                    ${booking.payment_method}
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-item">
+
+                                <div class="booking-item-label">
+                                    BOOKED ON
+                                </div>
+
+                                <div class="booking-item-value">
+                                    ${formatBookedDate(
+                                        booking.booked_at
+                                    )}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="booking-seats">
+
+                            <div class="booking-seats-title">
+                                BOOKED SEATS
+                            </div>
+
+                            ${seatsHTML}
+
+                        </div>
+
+
+                        <div class="booking-total">
+
+                            <div class="booking-total-label">
+                                Total Amount
+                            </div>
+
+                            <div class="booking-total-value">
+                                ₹${booking.total.toFixed(0)}
+                            </div>
+
+                        </div>
+
+                    `;
+
+
+                    container.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+
+        catch (error) {
+
+            console.log(
+                "Bookings error:",
+                error
+            );
+
+
+            container.innerHTML = `
+                <div class="booking-error">
+                    Unable to load bookings.
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    /* =====================================
+       FORMAT BOOKING DATE
+    ===================================== */
+
+    function formatBookedDate(
+        value
+    ) {
+
+        if (!value) {
+            return "-";
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return value;
+
+        }
+
+
+        return date.toLocaleString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       LOAD BOOKINGS
+    ===================================== */
+
+    loadMyBookings();
+
+</script>
+</body>
+</html>
