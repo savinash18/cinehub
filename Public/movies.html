@@ -548,10 +548,10 @@ container.innerHTML = "";
                     card.innerHTML = `
 
                         <img
-                            class="poster"
-                            src="${movie.poster}"
-                            alt="${movie.title}"
-                        >
+    class="poster"
+    src="${movie.poster.replace(/^posters\//i, 'Posters/')}"
+    alt="${movie.title}"
+>
 
 
                         <div class="movie-info">
