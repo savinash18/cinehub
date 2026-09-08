@@ -2337,27 +2337,30 @@ app.post(
                                                     // ==========================================
 
                                                     try {
+    const { data, error } = await resend.emails.send({
+        from: "CineHub <onboarding@resend.dev>",
+        to: userEmail,
+        subject: mailOptions.subject,
+        html: mailOptions.html
+    });
 
-                                                        await transporter.sendMail(
-                                                            mailOptions
-                                                        );
+    if (error) {
+        console.log("Resend booking email error:");
+        console.log(error);
+    } else {
+        console.log(
+            "Booking confirmation email sent to:",
+            userEmail
+        );
+        console.log("Email ID:", data.id);
+    }
 
-
-                                                        console.log(
-                                                            "Booking confirmation email sent to:",
-                                                            userEmail
-                                                        );
-
-                                                    } catch (
-                                                        emailError
-                                                    ) {
-
-                                                        console.log(
-                                                            "Booking email error:",
-                                                            emailError
-                                                        );
-
-                                                    }
+} catch (emailError) {
+    console.log(
+        "Resend booking email error:",
+        emailError
+    );
+}
 
                                                 }
                                             );
