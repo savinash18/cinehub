@@ -5,6 +5,7 @@ const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 const path = require("path");
 
 const app = express();
@@ -43,16 +44,7 @@ app.get("/register.html/", (req, res) => {
 // EMAIL
 // ==================================================
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ==================================================
 // MYSQL
@@ -1042,43 +1034,34 @@ app.post(
                 };
 
 
-                try {
+               try {
+    const { data, error } = await resend.emails.send({
+        from: "CineHub <onboarding@resend.dev>",
+        to: email,
+        subject: "CineHub Password Reset Code",
+        text:
+            `Your CineHub password reset verification code is: ${otp}\n\n` +
+            `This code will expire in 10 minutes.`
+    });
 
-                    await transporter.sendMail(
-                        mailOptions
-                    );
+    if (error) {
+        console.log("Resend email error:");
+        console.log(error);
 
+        return res.send("Unable to send verification email");
+    }
 
-                    console.log(
-                        "OTP sent to:",
-                        email
-                    );
+    console.log("OTP sent to:", email);
+    console.log("Email ID:", data.id);
 
+    res.redirect("/forgot-password.html?sent=1");
 
-                    console.log(
-                        "OTP:",
-                        otp
-                    );
+} catch (error) {
+    console.log("Resend email error:");
+    console.log(error);
 
-
-                    res.redirect(
-                        "/forgot-password.html?sent=1"
-                    );
-
-                } catch (error) {
-
-                    console.log(
-                        "Email error:"
-                    );
-
-                    console.log(error);
-
-
-                    res.send(
-                        "Unable to send verification email"
-                    );
-
-                }
+    res.send("Unable to send verification email");
+}
 
             }
         );
