@@ -2683,8 +2683,8 @@ app.listen(
         );
 
         console.log(
-            "http://localhost:3000"
-        );
+    `Server running on port ${process.env.PORT || 3000}`
+);
 
         console.log(
             "================================"
