@@ -496,38 +496,131 @@ function addScreens() {
 // ==================================================
 // SET DEFAULT SHOW DATES
 // ==================================================
+// ==================================================
+// SET SHOW DATES FOR NEXT 7 DAYS
+// ==================================================
 
 function setDefaultShowDates() {
 
-    const sql = `
-
+    // Assign today's date to existing shows
+    // that don't have a date
+    const updateSql = `
         UPDATE shows
-
         SET show_date = CURDATE()
-
         WHERE show_date IS NULL
-
     `;
 
-    db.query(sql, (err) => {
+    db.query(updateSql, (err) => {
 
         if (err) {
-
             console.log(
                 "Show date update error:",
                 err
             );
-
-        } else {
-
-            console.log(
-                "Existing NULL show dates updated."
-            );
-
+            return;
         }
 
-    });
+        console.log(
+            "Existing show dates updated."
+        );
 
+        // Create the same shows for the
+        // next 6 days.
+        //
+        // Today + 6 days = 7 dates total
+        //
+        // Example:
+        // Sept 8
+        // Sept 9
+        // Sept 10
+        // Sept 11
+        // Sept 12
+        // Sept 13
+        // Sept 14
+
+        const createDatesSql = `
+            INSERT INTO shows
+            (
+                movie_id,
+                theatre_id,
+                show_date,
+                show_time,
+                variation
+            )
+
+            SELECT
+                s.movie_id,
+                s.theatre_id,
+                DATE_ADD(
+                    CURDATE(),
+                    INTERVAL d.day DAY
+                ),
+                s.show_time,
+                s.variation
+
+            FROM shows s
+
+            CROSS JOIN (
+                SELECT 1 AS day
+                UNION ALL
+                SELECT 2
+                UNION ALL
+                SELECT 3
+                UNION ALL
+                SELECT 4
+                UNION ALL
+                SELECT 5
+                UNION ALL
+                SELECT 6
+            ) d
+
+            WHERE s.show_date = CURDATE()
+
+            AND NOT EXISTS (
+                SELECT 1
+                FROM shows existing
+
+                WHERE existing.movie_id =
+                    s.movie_id
+
+                AND existing.theatre_id =
+                    s.theatre_id
+
+                AND existing.show_date =
+                    DATE_ADD(
+                        CURDATE(),
+                        INTERVAL d.day DAY
+                    )
+
+                AND existing.show_time =
+                    s.show_time
+
+                AND existing.variation =
+                    s.variation
+            )
+        `;
+
+        db.query(
+            createDatesSql,
+            (dateErr, result) => {
+
+                if (dateErr) {
+
+                    console.log(
+                        "Future show dates error:",
+                        dateErr
+                    );
+
+                    return;
+                }
+
+                console.log(
+                    "Future show dates created:",
+                    result.affectedRows
+                );
+            }
+        );
+    });
 }
 
 
@@ -824,7 +917,8 @@ app.post(
 
                     req.session.user = {
 
-                        id: user.id,
+                        id:
+                            user.id,
 
                         name:
                             user.name,
@@ -1045,7 +1139,6 @@ app.post(
         req.session.otpVerified =
             true;
 
-
         delete req.session.resetOTP;
         delete req.session.otpExpires;
 
@@ -1203,12 +1296,9 @@ app.get(
         if (req.session.user) {
 
             res.json({
-
                 loggedIn: true,
-
                 user:
                     req.session.user
-
             });
 
         } else {
@@ -1302,7 +1392,6 @@ app.get(
 
 
         const sql = `
-
             SELECT
                 movies.id AS movie_id,
                 movies.title,
@@ -1421,9 +1510,7 @@ app.get(
 
 
         const sql = `
-
             SELECT
-
                 theatres.id
                     AS theatre_id,
 
@@ -1511,9 +1598,7 @@ app.get(
 
 
         const sql = `
-
             SELECT
-
                 seats.id,
 
                 seats.theatre_id,
@@ -1531,9 +1616,7 @@ app.get(
                     AS seat_name,
 
                 CASE
-
                     WHEN EXISTS (
-
                         SELECT 1
                         FROM bookings
 
@@ -1550,9 +1633,7 @@ app.get(
 
                             bookings.payment_status =
                                 'SUCCESS'
-
                     )
-
                     THEN 1
 
                     ELSE 0
@@ -1821,10 +1902,8 @@ app.post(
                 const currentTime =
                     now.getTime();
 
-
                 const showTime =
                     showDate.getTime();
-
 
                 const difference =
                     showTime -
@@ -1969,25 +2048,355 @@ app.post(
                             index
                         ) => {
 
+                            // ==========================================
+                            // ALL SEATS INSERTED
+                            // ==========================================
+
                             if (
                                 index >=
                                 seats.length
                             ) {
 
-                                return res.json({
+                                // ==========================================
+                                // SEND BOOKING SUCCESS RESPONSE ONLY ONCE
+                                // ==========================================
 
+                                res.json({
                                     success: true,
-
                                     booking_reference:
                                         bookingReference,
-
                                     message:
                                         "Booking successful"
-
                                 });
+
+
+                                // ==========================================
+                                // SEND BOOKING CONFIRMATION EMAIL
+                                // ==========================================
+
+                                const userEmail =
+                                    req.session.user
+                                        ? req.session.user.email
+                                        : null;
+
+
+                                const userName =
+                                    req.session.user
+                                        ? req.session.user.name
+                                        : "Customer";
+
+
+                                if (userEmail) {
+
+                                    const emailSql = `
+
+                                        SELECT
+
+                                            movies.title AS movie_title,
+
+                                            shows.show_date,
+
+                                            shows.show_time,
+
+                                            shows.variation,
+
+                                            theatres.name AS screen_name
+
+                                        FROM shows
+
+                                        JOIN movies
+                                            ON shows.movie_id =
+                                               movies.id
+
+                                        JOIN theatres
+                                            ON shows.theatre_id =
+                                               theatres.id
+
+                                        WHERE shows.id = ?
+
+                                    `;
+
+
+                                    db.query(
+                                        emailSql,
+                                        [show_id],
+                                        (
+                                            emailErr,
+                                            emailResults
+                                        ) => {
+
+                                            if (
+                                                emailErr
+                                            ) {
+
+                                                console.log(
+                                                    "Email booking details error:",
+                                                    emailErr
+                                                );
+
+                                                return;
+
+                                            }
+
+
+                                            if (
+                                                !emailResults ||
+                                                emailResults.length === 0
+                                            ) {
+
+                                                console.log(
+                                                    "Booking email details not found."
+                                                );
+
+                                                return;
+
+                                            }
+
+
+                                            const showDetails =
+                                                emailResults[0];
+
+
+                                            // ==========================================
+                                            // GET SELECTED SEAT NAMES
+                                            // ==========================================
+
+                                            const seatSql = `
+
+                                                SELECT
+
+                                                    CONCAT(
+                                                        seats.seat_row,
+                                                        seats.seat_number
+                                                    ) AS seat_name
+
+                                                FROM bookings
+
+                                                JOIN seats
+                                                    ON bookings.seat_id =
+                                                       seats.id
+
+                                                WHERE
+                                                    bookings.booking_reference = ?
+
+                                            `;
+
+
+                                            db.query(
+                                                seatSql,
+                                                [bookingReference],
+                                                async (
+                                                    seatErr,
+                                                    seatResults
+                                                ) => {
+
+                                                    if (
+                                                        seatErr
+                                                    ) {
+
+                                                        console.log(
+                                                            "Email seat error:",
+                                                            seatErr
+                                                        );
+
+                                                    }
+
+
+                                                    const seatNames =
+                                                        !seatErr &&
+                                                        seatResults
+
+                                                            ? seatResults
+                                                                .map(
+                                                                    seat =>
+                                                                        seat.seat_name
+                                                                )
+                                                                .join(", ")
+
+                                                            : seats.join(", ");
+
+
+                                                    // ==========================================
+                                                    // EMAIL
+                                                    // ==========================================
+
+                                                    const mailOptions = {
+
+                                                        from:
+                                                            process.env.EMAIL_USER,
+
+                                                        to:
+                                                            userEmail,
+
+                                                        subject:
+                                                            "CineHub - Booking Confirmed 🎬",
+
+                                                        html: `
+
+                                                            <div style="
+                                                                font-family: Arial, sans-serif;
+                                                                max-width: 600px;
+                                                                margin: auto;
+                                                                padding: 25px;
+                                                                background: #171129;
+                                                                color: #f7f1e8;
+                                                                border-radius: 15px;
+                                                            ">
+
+                                                                <h1 style="
+                                                                    color: #F4C43D;
+                                                                    text-align: center;
+                                                                ">
+                                                                    🎬 CineHub
+                                                                </h1>
+
+
+                                                                <h2 style="
+                                                                    text-align: center;
+                                                                    color: #F4C43D;
+                                                                ">
+                                                                    Booking Confirmed!
+                                                                </h2>
+
+
+                                                                <p>
+                                                                    Hello
+                                                                    <strong>
+                                                                        ${userName}
+                                                                    </strong>,
+                                                                </p>
+
+
+                                                                <p>
+                                                                    Your movie tickets have been
+                                                                    successfully booked.
+                                                                </p>
+
+
+                                                                <hr>
+
+
+                                                                <p>
+                                                                    <strong>Movie:</strong>
+                                                                    ${showDetails.movie_title}
+                                                                </p>
+
+
+                                                                <p>
+                                                                    <strong>Date:</strong>
+                                                                    ${showDetails.show_date}
+                                                                </p>
+
+
+                                                                <p>
+                                                                    <strong>Time:</strong>
+                                                                    ${showDetails.show_time}
+                                                                </p>
+
+
+                                                                <p>
+                                                                    <strong>Screen:</strong>
+                                                                    ${showDetails.screen_name}
+                                                                </p>
+
+
+                                                                <p>
+                                                                    <strong>Format:</strong>
+                                                                    ${showDetails.variation}
+                                                                </p>
+
+
+                                                                <p>
+                                                                    <strong>Seats:</strong>
+                                                                    ${seatNames}
+                                                                </p>
+
+
+                                                                <p>
+                                                                    <strong>Booking ID:</strong>
+                                                                    ${bookingReference}
+                                                                </p>
+
+
+                                                                <p>
+                                                                    <strong>Amount Paid:</strong>
+                                                                    ₹${Number(amount).toFixed(2)}
+                                                                </p>
+
+
+                                                                <p>
+                                                                    <strong>Payment Method:</strong>
+                                                                    ${payment_method}
+                                                                </p>
+
+
+                                                                <hr>
+
+
+                                                                <p style="
+                                                                    text-align: center;
+                                                                    color: #F4C43D;
+                                                                ">
+                                                                    Thank you for booking with CineHub!
+                                                                </p>
+
+                                                            </div>
+
+                                                        `
+
+                                                    };
+
+
+                                                    // ==========================================
+                                                    // SEND EMAIL
+                                                    // ==========================================
+
+                                                    try {
+
+                                                        await transporter.sendMail(
+                                                            mailOptions
+                                                        );
+
+
+                                                        console.log(
+                                                            "Booking confirmation email sent to:",
+                                                            userEmail
+                                                        );
+
+                                                    } catch (
+                                                        emailError
+                                                    ) {
+
+                                                        console.log(
+                                                            "Booking email error:",
+                                                            emailError
+                                                        );
+
+                                                    }
+
+                                                }
+                                            );
+
+                                        }
+                                    );
+
+                                }
+
+
+                                // ==========================================
+                                // VERY IMPORTANT
+                                // ==========================================
+                                // Do NOT send another res.json()
+                                // after this point.
+
+                                return;
 
                             }
 
+
+                            // ==========================================
+                            // INSERT BOOKING
+                            // ==========================================
 
                             const insertSql = `
 
@@ -2104,89 +2513,125 @@ app.get(
 // GET MY BOOKINGS
 // ==================================================
 
-// ==================================================
-// GET MY BOOKINGS
-// ==================================================
-
 app.get(
     "/api/my-bookings",
     (req, res) => {
 
         // User must be logged in
+
         if (!req.session.user) {
+
             return res
                 .status(401)
                 .json({
-                    message: "Please login first."
+                    message:
+                        "Please login first."
                 });
+
         }
+
 
         const userId =
             req.session.user.id;
 
+
         const sql = `
+
             SELECT
+
                 bookings.id,
+
                 bookings.booking_reference,
+
                 bookings.show_id,
+
                 bookings.seat_id,
+
                 bookings.amount,
+
                 bookings.payment_method,
+
                 bookings.payment_status,
+
                 bookings.booked_at,
 
+
                 movies.title AS movie_title,
+
 
                 DATE_FORMAT(
                     shows.show_date,
                     '%Y-%m-%d'
                 ) AS show_date,
 
+
                 shows.show_time,
+
                 shows.variation,
+
 
                 theatres.name AS screen_name,
 
+
                 seats.seat_row,
+
                 seats.seat_number,
+
                 seats.seat_type
 
+
             FROM bookings
+
 
             JOIN shows
                 ON bookings.show_id =
                    shows.id
 
+
             JOIN movies
                 ON shows.movie_id =
                    movies.id
+
 
             JOIN theatres
                 ON shows.theatre_id =
                    theatres.id
 
+
             JOIN seats
                 ON bookings.seat_id =
                    seats.id
 
+
             WHERE
+
                 bookings.user_id = ?
+
 
                 AND bookings.payment_status =
                     'SUCCESS'
 
+
                 AND TIMESTAMP(
+
                     shows.show_date,
+
                     STR_TO_DATE(
                         shows.show_time,
                         '%h:%i %p'
                     )
+
                 ) + INTERVAL 3 HOUR > NOW()
 
+
             ORDER BY
+
                 bookings.booked_at DESC,
+
                 bookings.id DESC
+
         `;
+
 
         db.query(
             sql,
@@ -2206,13 +2651,18 @@ app.get(
                             message:
                                 "Failed to load bookings"
                         });
+
                 }
 
+
                 res.json(results);
+
             }
         );
+
     }
 );
+
 
 // ==================================================
 // START SERVER

@@ -517,15 +517,17 @@
             }
 
         }
-	::selection {
-    background: #F4C43D;
-    color: #171129;
-}
 
-::-moz-selection {
-    background: #F4C43D;
-    color: #171129;
-}
+        ::selection {
+            background: #F4C43D;
+            color: #171129;
+        }
+
+        ::-moz-selection {
+            background: #F4C43D;
+            color: #171129;
+        }
+
     </style>
 
 </head>
@@ -738,6 +740,8 @@
             </div>
 
 
+            <!-- REGULAR SEATS -->
+
             <div
                 class="price-row"
                 id="regularRow"
@@ -749,7 +753,6 @@
                     (<span id="regularCount">0</span>)
 
                 </div>
-
 
                 <div
                     class="price-value"
@@ -763,6 +766,8 @@
             </div>
 
 
+            <!-- RECLINER SEATS -->
+
             <div
                 class="price-row"
                 id="reclinerRow"
@@ -774,7 +779,6 @@
                     (<span id="reclinerCount">0</span>)
 
                 </div>
-
 
                 <div
                     class="price-value"
@@ -788,16 +792,35 @@
             </div>
 
 
+            <!-- FOOD COMBO - ONLY FOR RECLINER -->
+<div class="price-row" id="foodComboRow" style="display:none;">
+    <div class="price-name">
+        🎁 Food Combo
+        (<span id="foodCount">0</span>)
+    </div>
+
+    <div class="price-value">
+        <span style="color:#39ff5a; font-weight:700;">
+            🍿 Popcorn + 🥤 Drink
+            <span style="font-size:14px;">(FREE)</span>
+        </span>
+    </div>
+</div>
+
+            <!-- BOOKING FEE -->
+
             <div class="price-row">
 
                 <div class="price-name">
 
-                    Booking Fee
+                    Booking Fee + GST
 
                 </div>
 
-
-                <div class="price-value">
+                <div
+                    class="price-value"
+                    id="bookingFee"
+                >
 
                     ₹0
 
@@ -806,6 +829,8 @@
             </div>
 
 
+            <!-- TOTAL -->
+
             <div class="total-row">
 
                 <div class="total-label">
@@ -813,7 +838,6 @@
                     TOTAL
 
                 </div>
-
 
                 <div
                     class="total-value"
@@ -884,11 +908,14 @@
         const showId =
             params.get("show_id");
 
-const movieId =
-    params.get("movie_id");
 
-const movieTitle =
-    params.get("movie_title");
+        const movieId =
+            params.get("movie_id");
+
+
+        const movieTitle =
+            params.get("movie_title");
+
 
         const screen =
             params.get("screen");
@@ -1012,16 +1039,15 @@ const movieTitle =
 
         }
 
-// ==========================================
-// DISPLAY MOVIE NAME
-// ==========================================
 
-document.getElementById(
-    "movieTitle"
-).innerText =
-    movieTitle || "Movie Booking";
+        // ==========================================
+        // DISPLAY MOVIE NAME
+        // ==========================================
 
-
+        document.getElementById(
+            "movieTitle"
+        ).innerText =
+            movieTitle || "Movie Booking";
 
 
         // ==========================================
@@ -1048,7 +1074,9 @@ document.getElementById(
                     <span
                         style="color:#9B91B4;"
                     >
+
                         No seats selected.
+
                     </span>
 
                 `;
@@ -1121,6 +1149,10 @@ document.getElementById(
             );
 
 
+            // ==========================================
+            // SEAT AMOUNTS
+            // ==========================================
+
             const regularAmount =
                 regularCount *
                 REGULAR_PRICE;
@@ -1131,10 +1163,67 @@ document.getElementById(
                 RECLINER_PRICE;
 
 
-            const total =
+            const seatTotal =
                 regularAmount +
                 reclinerAmount;
 
+
+            // ==========================================
+            // FREE FOOD COMBO
+            // 1 COMBO FOR EACH TICKET
+            // ==========================================
+
+// ==========================================
+// FREE FOOD COMBO
+// ONLY FOR RECLINER SEATS
+// 1 COMBO FOR EACH RECLINER
+// ==========================================
+
+const foodCount = reclinerCount;
+
+document.getElementById(
+    "foodCount"
+).innerText = foodCount;
+
+const foodComboRow =
+    document.getElementById("foodComboRow");
+
+if (reclinerCount > 0) {
+    foodComboRow.style.display = "flex";
+} else {
+    foodComboRow.style.display = "none";
+}
+
+
+            // ==========================================
+            // BOOKING FEE + GST
+            // ₹12.50 PER TICKET
+            // ==========================================
+
+            const bookingFee =
+                selectedSeats.length *
+                12.50;
+
+
+            document.getElementById(
+                "bookingFee"
+            ).innerText =
+                "₹" +
+                bookingFee.toFixed(2);
+
+
+            // ==========================================
+            // TOTAL
+            // ==========================================
+
+            const total =
+                seatTotal +
+                bookingFee;
+
+
+            // ==========================================
+            // DISPLAY COUNTS
+            // ==========================================
 
             document.getElementById(
                 "regularCount"
@@ -1147,6 +1236,10 @@ document.getElementById(
             ).innerText =
                 reclinerCount;
 
+
+            // ==========================================
+            // DISPLAY AMOUNTS
+            // ==========================================
 
             document.getElementById(
                 "regularAmount"
@@ -1166,8 +1259,12 @@ document.getElementById(
                 "totalAmount"
             ).innerText =
                 "₹" +
-                total;
+                total.toFixed(2);
 
+
+            // ==========================================
+            // HIDE REGULAR ROW IF NONE
+            // ==========================================
 
             if (
                 regularCount === 0
@@ -1180,6 +1277,10 @@ document.getElementById(
 
             }
 
+
+            // ==========================================
+            // HIDE RECLINER ROW IF NONE
+            // ==========================================
 
             if (
                 reclinerCount === 0
@@ -1228,14 +1329,16 @@ document.getElementById(
                 encodeURIComponent(
                     showId
                 ) +
-		"&movie_id=" +
-encodeURIComponent(
-    movieId
-) +
-"&movie_title=" +
-encodeURIComponent(
-    movieTitle
-) +
+
+                "&movie_id=" +
+                encodeURIComponent(
+                    movieId
+                ) +
+
+                "&movie_title=" +
+                encodeURIComponent(
+                    movieTitle
+                ) +
 
                 "&screen=" +
                 encodeURIComponent(
