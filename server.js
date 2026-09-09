@@ -79,7 +79,7 @@ async function sendBrevoEmail({
 
                 textContent: text || "",
 
-                htmlContent: html || ""
+                htmlContent: html || text || ""
             })
         }
     );
