@@ -4,7 +4,6 @@ const express = require("express");
 const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
-const nodemailer = require("nodemailer");
 const path = require("path");
 
 const app = express();
@@ -42,15 +41,60 @@ app.get("/register.html/", (req, res) => {
 // ==================================================
 // EMAIL
 // ==================================================
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: false,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
+// ==================================================
+// EMAIL - BREVO API
+// ==================================================
+
+async function sendBrevoEmail({
+    to,
+    subject,
+    text,
+    html
+}) {
+
+    const response = await fetch(
+        "https://api.brevo.com/v3/smtp/email",
+        {
+            method: "POST",
+
+            headers: {
+                "accept": "application/json",
+                "api-key": process.env.BREVO_API_KEY,
+                "content-type": "application/json"
+            },
+
+            body: JSON.stringify({
+                sender: {
+                    name: "CineHub",
+                    email: process.env.SMTP_FROM
+                },
+
+                to: [
+                    {
+                        email: to
+                    }
+                ],
+
+                subject: subject,
+
+                textContent: text || "",
+
+                htmlContent: html || ""
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            `Brevo API error: ${response.status}`
+        );
     }
-});
+
+    return data;
+}
 // ==================================================
 // MYSQL
 // ==================================================
@@ -1040,25 +1084,44 @@ app.post(
 
 
                try {
-    const info = await transporter.sendMail({
-        from: `"CineHub" <${process.env.SMTP_FROM}>`,
+
+    const result = await sendBrevoEmail({
+
         to: email,
-        subject: "CineHub Password Reset Code",
+
+        subject:
+            "CineHub Password Reset Code",
+
         text:
             `Your CineHub password reset verification code is: ${otp}\n\n` +
             `This code will expire in 10 minutes.`
     });
 
-    console.log("OTP sent to:", email);
-    console.log("Email ID:", info.messageId);
+    console.log(
+        "OTP sent to:",
+        email
+    );
 
-    res.redirect("/forgot-password.html?sent=1");
+    console.log(
+        "Brevo message ID:",
+        result.messageId
+    );
+
+    res.redirect(
+        "/forgot-password.html?sent=1"
+    );
 
 } catch (error) {
-    console.log("Brevo email error:");
+
+    console.log(
+        "Brevo email error:"
+    );
+
     console.log(error);
 
-    res.send("Unable to send verification email");
+    res.send(
+        "Unable to send verification email"
+    );
 }
 
             }
@@ -2335,24 +2398,42 @@ app.post(
                                                     // ==========================================
 
                                                     try {
-    const info = await transporter.sendMail({
-        from: `"CineHub" <${process.env.SMTP_FROM}>`,
+
+    const result = await sendBrevoEmail({
+
         to: userEmail,
-        subject: mailOptions.subject,
-        html: mailOptions.html
+
+        subject:
+            mailOptions.subject,
+
+        html:
+            mailOptions.html,
+
+        text:
+            `Your CineHub booking has been confirmed.\n\n` +
+            `Booking ID: ${bookingReference}\n` +
+            `Movie: ${showDetails.movie_title}\n` +
+            `Seats: ${seatNames}\n` +
+            `Amount Paid: ₹${Number(amount).toFixed(2)}`
     });
 
     console.log(
         "Booking confirmation email sent to:",
         userEmail
     );
-    console.log("Email ID:", info.messageId);
+
+    console.log(
+        "Brevo message ID:",
+        result.messageId
+    );
 
 } catch (emailError) {
+
     console.log(
         "Brevo booking email error:",
         emailError
     );
+
 }
 
                                                 }
