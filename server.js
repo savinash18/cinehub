@@ -5,7 +5,6 @@ const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const nodemailer = require("nodemailer");
-const { Resend } = require("resend");
 const path = require("path");
 
 const app = express();
@@ -43,9 +42,15 @@ app.get("/register.html/", (req, res) => {
 // ==================================================
 // EMAIL
 // ==================================================
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: false,
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+    }
+});
 // ==================================================
 // MYSQL
 // ==================================================
@@ -1035,29 +1040,22 @@ app.post(
 
 
                try {
-    const { data, error } = await resend.emails.send({
-        from: "CineHub <onboarding@resend.dev>",
-        to: "delivered@resend.dev",
+    const info = await transporter.sendMail({
+        from: `"CineHub" <${process.env.SMTP_FROM}>`,
+        to: email,
         subject: "CineHub Password Reset Code",
         text:
             `Your CineHub password reset verification code is: ${otp}\n\n` +
             `This code will expire in 10 minutes.`
     });
 
-    if (error) {
-        console.log("Resend email error:");
-        console.log(error);
-
-        return res.send("Unable to send verification email");
-    }
-
     console.log("OTP sent to:", email);
-    console.log("Email ID:", data.id);
+    console.log("Email ID:", info.messageId);
 
     res.redirect("/forgot-password.html?sent=1");
 
 } catch (error) {
-    console.log("Resend email error:");
+    console.log("Brevo email error:");
     console.log(error);
 
     res.send("Unable to send verification email");
@@ -2337,27 +2335,22 @@ app.post(
                                                     // ==========================================
 
                                                     try {
-    const { data, error } = await resend.emails.send({
-        from: "CineHub <onboarding@resend.dev>",
+    const info = await transporter.sendMail({
+        from: `"CineHub" <${process.env.SMTP_FROM}>`,
         to: userEmail,
         subject: mailOptions.subject,
         html: mailOptions.html
     });
 
-    if (error) {
-        console.log("Resend booking email error:");
-        console.log(error);
-    } else {
-        console.log(
-            "Booking confirmation email sent to:",
-            userEmail
-        );
-        console.log("Email ID:", data.id);
-    }
+    console.log(
+        "Booking confirmation email sent to:",
+        userEmail
+    );
+    console.log("Email ID:", info.messageId);
 
 } catch (emailError) {
     console.log(
-        "Resend booking email error:",
+        "Brevo booking email error:",
         emailError
     );
 }
