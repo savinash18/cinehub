@@ -1037,7 +1037,7 @@ app.post(
                try {
     const { data, error } = await resend.emails.send({
         from: "CineHub <onboarding@resend.dev>",
-        to: email,
+        to: "delivered@resend.dev",
         subject: "CineHub Password Reset Code",
         text:
             `Your CineHub password reset verification code is: ${otp}\n\n` +
