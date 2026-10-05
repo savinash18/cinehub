@@ -4,8 +4,6 @@ const express = require("express");
 const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
-const nodemailer = require("nodemailer");
-const { Resend } = require("resend");
 const path = require("path");
 
 const app = express();
@@ -41,10 +39,61 @@ app.get("/register.html/", (req, res) => {
 
 
 // ==================================================
-// EMAIL
+// EMAIL - BREVO API
 // ==================================================
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+async function sendBrevoEmail({
+    to,
+    subject,
+    text,
+    html
+}) {
+
+    if (!process.env.BREVO_API_KEY) {
+        throw new Error("BREVO_API_KEY is missing");
+    }
+
+    if (!process.env.SMTP_FROM) {
+        throw new Error("SMTP_FROM is missing");
+    }
+
+    const response = await fetch(
+        "https://api.brevo.com/v3/smtp/email",
+        {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "api-key": process.env.BREVO_API_KEY,
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                sender: {
+                    name: "CineHub",
+                    email: process.env.SMTP_FROM
+                },
+                to: [
+                    {
+                        email: to
+                    }
+                ],
+                subject: subject,
+                textContent: text || "",
+                htmlContent: html || text || ""
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            `Brevo API error: ${response.status}`
+        );
+    }
+
+    return data;
+}
 
 // ==================================================
 // MYSQL
@@ -1037,34 +1086,77 @@ app.post(
                 };
 
 
-               try {
-    const { data, error } = await resend.emails.send({
-        from: "CineHub <onboarding@resend.dev>",
-        to: "delivered@resend.dev",
-        subject: "CineHub Password Reset Code",
-        text:
-            `Your CineHub password reset verification code is: ${otp}\n\n` +
-            `This code will expire in 10 minutes.`
-    });
+                try {
 
-    if (error) {
-        console.log("Resend email error:");
-        console.log(error);
+                    const result = await sendBrevoEmail({
+                        to: email,
 
-        return res.send("Unable to send verification email");
-    }
+                        subject:
+                            "CineHub Password Reset Code",
 
-    console.log("OTP sent to:", email);
-    console.log("Email ID:", data.id);
+                        text:
+                            `Your CineHub password reset verification code is: ${otp}\n\n` +
+                            `This code will expire in 10 minutes.`,
 
-    res.redirect("/forgot-password.html?sent=1");
+                        html: `
+                            <div style="font-family:Arial,sans-serif;max-width:500px;margin:auto;padding:25px;background:#171129;color:#f7f1e8;border-radius:15px;">
 
-} catch (error) {
-    console.log("Resend email error:");
-    console.log(error);
+                                <h1 style="color:#F4C43D;text-align:center;">
+                                    🎬 CineHub
+                                </h1>
 
-    res.send("Unable to send verification email");
-}
+                                <h2 style="text-align:center;">
+                                    Password Reset
+                                </h2>
+
+                                <p>
+                                    Your CineHub password reset verification code is:
+                                </p>
+
+                                <h1 style="text-align:center;letter-spacing:8px;color:#F4C43D;">
+                                    ${otp}
+                                </h1>
+
+                                <p>
+                                    This code will expire in 10 minutes.
+                                </p>
+
+                                <p>
+                                    If you did not request a password reset,
+                                    please ignore this email.
+                                </p>
+
+                            </div>
+                        `
+                    });
+
+                    console.log(
+                        "OTP sent to:",
+                        email
+                    );
+
+                    console.log(
+                        "Brevo message ID:",
+                        result.messageId
+                    );
+
+                } catch (error) {
+
+                    console.log(
+                        "Brevo password reset email error:"
+                    );
+
+                    console.log(error);
+
+                    return res.send(
+                        "Unable to send verification email"
+                    );
+
+                }
+
+                res.redirect(
+                    "/forgot-password.html?sent=1"
+                );
 
             }
         );
@@ -2335,36 +2427,57 @@ app.post(
                                                     };
 
 
-                                                    // ==========================================
-                                                    // SEND EMAIL
-                                                    // ==========================================
+try {
 
-                                                    try {
-    const { data, error } = await resend.emails.send({
-        from: "CineHub <onboarding@resend.dev>",
+    const result = await sendBrevoEmail({
+
         to: userEmail,
-        subject: mailOptions.subject,
-        html: mailOptions.html
+
+        subject:
+            mailOptions.subject,
+
+        html:
+            mailOptions.html,
+
+        text:
+            `Your CineHub booking has been confirmed.\n\n` +
+            `Booking ID: ${bookingReference}\n` +
+            `Movie: ${showDetails.movie_title}\n` +
+            `Date: ${showDetails.show_date}\n` +
+            `Time: ${showDetails.show_time}\n` +
+            `Screen: ${showDetails.screen_name}\n` +
+            `Format: ${showDetails.variation}\n` +
+            `Seats: ${seatNames}\n` +
+            `Amount Paid: ₹${Number(amount).toFixed(2)}\n` +
+            `Payment Method: ${payment_method}\n\n` +
+            `Thank you for booking with CineHub!`
+
     });
 
-    if (error) {
-        console.log("Resend booking email error:");
-        console.log(error);
-    } else {
-        console.log(
-            "Booking confirmation email sent to:",
-            userEmail
-        );
-        console.log("Email ID:", data.id);
-    }
+
+    console.log(
+        "Booking confirmation email sent to:",
+        userEmail
+    );
+
+
+    console.log(
+        "Brevo message ID:",
+        result.messageId
+    );
+
 
 } catch (emailError) {
+
     console.log(
-        "Resend booking email error:",
+        "Brevo booking email error:"
+    );
+
+    console.log(
         emailError
     );
-}
 
+}
                                                 }
                                             );
 
