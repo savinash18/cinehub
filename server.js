@@ -1084,6 +1084,9 @@ app.post(
                         `This code will expire in 10 minutes.`
 
                 };
+console.log("FORGOT PASSWORD REQUEST FOR:", email);
+console.log("BREVO KEY EXISTS:", !!process.env.BREVO_API_KEY);
+console.log("SMTP FROM EXISTS:", !!process.env.SMTP_FROM);
 
 
                 try {
@@ -1142,17 +1145,16 @@ app.post(
 
                 } catch (error) {
 
-                    console.log(
-                        "Brevo password reset email error:"
-                    );
+    console.log("================================");
+    console.log("BREVO EMAIL ERROR");
+    console.log("Message:", error.message);
+    console.log("Full error:", error);
+    console.log("================================");
 
-                    console.log(error);
-
-                    return res.send(
-                        "Unable to send verification email"
-                    );
-
-                }
+    res.status(500).send(
+        "Brevo email error: " + error.message
+    );
+}
 
                 res.redirect(
                     "/forgot-password.html?sent=1"
