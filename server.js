@@ -2364,16 +2364,20 @@ app.post(
                                                                 </p>
 
 
-                                                                <p>
-                                                                    <strong>Date:</strong>
-                                                                    ${showDetails.show_date}
-                                                                </p>
+                                                               <p>
+    <strong>Date:</strong>
+    ${new Date(showDetails.show_date).toLocaleDateString("en-IN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    })}
+</p>
 
-
-                                                                <p>
-                                                                    <strong>Time:</strong>
-                                                                    ${showDetails.show_time}
-                                                                </p>
+<p>
+    <strong>Time:</strong>
+    ${showDetails.show_time}
+</p>
 
 
                                                                 <p>
@@ -2445,8 +2449,13 @@ try {
             `Your CineHub booking has been confirmed.\n\n` +
             `Booking ID: ${bookingReference}\n` +
             `Movie: ${showDetails.movie_title}\n` +
-            `Date: ${showDetails.show_date}\n` +
-            `Time: ${showDetails.show_time}\n` +
+            `Date: ${new Date(showDetails.show_date).toLocaleDateString("en-IN", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+})}\n` +
+`Time: ${showDetails.show_time}\n` +
             `Screen: ${showDetails.screen_name}\n` +
             `Format: ${showDetails.variation}\n` +
             `Seats: ${seatNames}\n` +
