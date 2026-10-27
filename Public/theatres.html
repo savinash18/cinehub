@@ -785,9 +785,7 @@
                     new Date(today);
 
 
-                date.setDate(
-                    today.getDate() + i
-                );
+                date.setDate(today.getDate() + i + 1);
 
 
                 dates.push(date);
@@ -1009,33 +1007,51 @@ allShows = Array.isArray(data)
                 // NORMALIZE ALL DATES
                 // ==========================================
 
-                allShows =
-                    allShows.map(
-                        show => {
-
-                            return {
-
-                                ...show,
-
-                                show_date:
-                                    normalizeDate(
-                                        show.show_date
-                                    )
-
-                            };
-
-                        }
-                    );
+            allShows = allShows.map(show => ({
+    ...show,
+    show_date: normalizeDate(
+        show.show_date ??
+        show.date ??
+        show.showDate
+    ),
+    show_time:
+        show.show_time ??
+        show.time ??
+        show.showTime,
+    show_id:
+        show.show_id ??
+        show.id,
+    screen_id:
+        show.screen_id ??
+        show.screenId,
+    screen_name:
+        show.screen_name ??
+        show.screenName ??
+        show.name,
+    variation:
+        show.variation ?? "2D"
+}));
 
 
                 // ==========================================
                 // MOVIE TITLE
                 // ==========================================
 
-                document.getElementById(
-                    "movieTitle"
-                ).innerText =
-                    allShows[0].title;
+                const params = new URLSearchParams(window.location.search);
+
+const titleFromUrl =
+    params.get("movie_title") ||
+    params.get("title") ||
+    params.get("movie");
+
+const titleFromApi =
+    allShows.find(show => show.title || show.movie_title);
+
+document.getElementById("movieTitle").innerText =
+    titleFromApi?.title ||
+    titleFromApi?.movie_title ||
+    titleFromUrl ||
+    "Movie selected";
 
 
                 // ==========================================

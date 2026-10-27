@@ -1589,89 +1589,55 @@ app.get(
 // GET MOVIE THEATRES / SCREENS
 // ==================================================
 
-app.get(
-    "/api/movies/:id/theatres",
-    (req, res) => {
+app.get("/api/movies/:id/theatres", (req, res) => {
+    const movieId = req.params.id;
 
-        const movieId =
-            req.params.id;
+    const sql = `
+        SELECT
+            movies.id AS movie_id,
+            movies.title AS title,
 
+            theatres.id AS theatre_id,
+            theatres.id AS screen_id,
+            theatres.name AS name,
+            theatres.name AS screen_name,
+            theatres.location AS location,
+            theatres.city AS city,
 
-        const sql = `
-            SELECT
-                theatres.id
-                    AS theatre_id,
+            shows.id AS show_id,
+            DATE_FORMAT(shows.show_date, '%Y-%m-%d') AS show_date,
+            shows.show_time AS show_time,
+            shows.variation AS variation
 
-                theatres.name,
+        FROM shows
 
-                theatres.location,
+        JOIN movies
+            ON shows.movie_id = movies.id
 
-                theatres.city,
+        JOIN theatres
+            ON shows.theatre_id = theatres.id
 
-                shows.id
-                    AS show_id,
+        WHERE shows.movie_id = ?
 
-                DATE_FORMAT(
-                    shows.show_date,
-                    '%Y-%m-%d'
-                )
-                    AS show_date,
+        ORDER BY
+            shows.show_date,
+            shows.variation,
+            theatres.id,
+            STR_TO_DATE(shows.show_time, '%h:%i %p')
+    `;
 
-                shows.show_time,
+    db.query(sql, [movieId], (err, results) => {
+        if (err) {
+            console.error("Theatre API error:", err);
 
-                shows.variation
+            return res.status(500).json({
+                message: "Failed to get theatres"
+            });
+        }
 
-            FROM shows
-
-            JOIN theatres
-                ON shows.theatre_id =
-                   theatres.id
-
-            WHERE
-                shows.movie_id = ?
-
-            ORDER BY
-                shows.show_date,
-                shows.variation,
-                theatres.id,
-                STR_TO_DATE(
-                    shows.show_time,
-                    '%h:%i %p'
-                )
-
-        `;
-
-
-        db.query(
-            sql,
-            [movieId],
-            (err, results) => {
-
-                if (err) {
-
-                    console.log(
-                        "Theatre error:",
-                        err
-                    );
-
-                    return res
-                        .status(500)
-                        .json({
-                            message:
-                                "Failed to get theatres"
-                        });
-
-                }
-
-
-                res.json(results);
-
-            }
-        );
-
-    }
-);
-
+        res.json(results);
+    });
+});
 
 // ==================================================
 // GET SEATS FOR A SHOW
